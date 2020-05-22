@@ -1,0 +1,26 @@
+.addBtn {
+  background-color: #263238 !important;
+  border-color: #263238 !important;
+
+  width: 50px !important;
+  transition: width 0.3s !important;
+}
+.addBtn:hover {
+  width: 80px !important;
+}
+
+.searchBtn {
+  background-color: #263238 !important;
+  border-color: #263238 !important;
+
+  width: 50px !important;
+  transition: width 0.3s !important;
+}
+.searchBtn:hover {
+  width: 80px !important;
+}
+
+/* badges */
+.badgeContainer button {
+  width: 140px !important;
+}

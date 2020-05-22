@@ -1,0 +1,12 @@
+.PageNotFoundSVG {
+  position: fixed;
+  top: 25%;
+  left: 25%;
+  height: 50%;
+  width: 50%;
+}
+
+.pageNotFoundText {
+  color: #545c6d;
+  font-weight: bold;
+}

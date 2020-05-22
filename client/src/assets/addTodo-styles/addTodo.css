@@ -1,0 +1,19 @@
+.addTodoForm {
+  box-shadow: 0px 0px 40px rgb(187, 187, 187);
+  padding: 20px 10px 20px 10px;
+  margin-bottom: 100px;
+  border-radius: 18px;
+}
+.addTodoForm:hover {
+  box-shadow: 0px 0px 20px rgb(187, 187, 187);
+}
+
+.addTodoForm input {
+  border-radius: 15px;
+}
+
+.headingText {
+  font-size: 20px;
+  color: #545c6d;
+  font-weight: bold;
+}
