@@ -1,7 +1,7 @@
 const router = require("express").Router();
 let Todos = require("../models/todos.model");
 
-// get all todos of logged in user
+// @desc: fetch todos of logged in user
 router.route("/user/:id").get((req, res) => {
   Todos.find({ userId: req.params.id })
     .then((todos) => {
@@ -10,22 +10,26 @@ router.route("/user/:id").get((req, res) => {
     .catch((err) => res.status(400).json("Error: " + err));
 });
 
-// search
+// @desc: search todos
 router.route("/search/").post((req, res) => {
   let l = req.body.label,
     s = req.body.status;
+  i = req.body.important;
   d = req.body.dueDate;
 
+  // if fields are empty, match everything
   if (l === "All Labels") l = new RegExp(/.+/s);
   if (s === "All Status") s = new RegExp(/.+/s);
+  if (i === "false") i = new RegExp(/.+/s);
   if (d === "") d = new RegExp(/.+/s);
 
-  console.log(l, s, d);
+  console.log(l, s, i, d);
 
   Todos.find({
     userId: req.body.id,
     label: new RegExp(l),
     status: new RegExp(s),
+    important: new RegExp(i),
     dueDate: new RegExp(d),
   })
     .then((todos) => {
@@ -34,7 +38,7 @@ router.route("/search/").post((req, res) => {
     .catch((err) => res.status(400).json("Error: " + err));
 });
 
-// add a todo
+// @desc: add a todo
 router.route("/add").post((req, res) => {
   const userId = req.body.userId;
   const title = req.body.title;
@@ -43,6 +47,7 @@ router.route("/add").post((req, res) => {
   const label = req.body.label;
   const status = req.body.status;
   const finished = req.body.finished;
+  const important = req.body.important;
   const collapsed = req.body.collapsed;
 
   const newTodo = new Todos({
@@ -53,6 +58,7 @@ router.route("/add").post((req, res) => {
     label,
     status,
     finished,
+    important,
     collapsed,
   });
 
@@ -61,19 +67,22 @@ router.route("/add").post((req, res) => {
     .then(() => res.json(newTodo))
     .catch((err) => res.status(400).json("Error: ", +err));
 });
-// get a particular todo
+
+// @desc: fetch a particular todo
 router.route("/:id").get((req, res) => {
   Todos.findById(req.params.id)
     .then((todo) => res.json(todo))
     .catch((err) => res.status(400).json("Error: ", err));
 });
-// delete a particular todo
+
+// @desc: delete a particular todo
 router.route("/:id").delete((req, res) => {
   Todos.findByIdAndDelete(req.params.id)
     .then(() => res.json("Todo Deleted"))
     .catch((err) => res.status(400).json("Error: " + err));
 });
-// update a particular todo
+
+// @desc: update a particular todo
 router.route("/update/:id").post((req, res) => {
   Todos.findById(req.params.id)
     .then((todo) => {
@@ -84,6 +93,7 @@ router.route("/update/:id").post((req, res) => {
       todo.label = req.body.label;
       todo.status = req.body.status;
       todo.finished = req.body.finished;
+      todo.important = req.body.important;
       todo.collapsed = req.body.collapsed;
 
       todo

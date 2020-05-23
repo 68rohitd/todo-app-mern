@@ -11,6 +11,7 @@ const todosSchema = new Schema(
     label: { type: String, required: true },
     status: { type: String, required: true },
     finished: { type: Boolean },
+    important: { type: String }, //setting type string as regex cannot match boolean
     collapsed: { type: Boolean },
   },
   {

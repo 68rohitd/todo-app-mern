@@ -2,6 +2,7 @@ import React, { Component } from "react";
 // import { Redirect } from "react-router-dom";
 import { Consumer } from "../../context";
 import axios from "axios";
+import classNames from "classnames";
 import { Redirect } from "react-router-dom";
 import EachTodoItem from "./EachTodoItem";
 import { Spring } from "react-spring/renderprops";
@@ -18,6 +19,7 @@ class AddTodo extends Component {
       label: "",
       status: "",
       finished: false,
+      important: "false",
     };
   }
 
@@ -33,6 +35,7 @@ class AddTodo extends Component {
       label: fetchedData.data.label,
       status: fetchedData.data.status,
       finished: fetchedData.data.finished,
+      important: fetchedData.data.important,
     });
   }
 
@@ -48,6 +51,13 @@ class AddTodo extends Component {
   onChange = (e) => {
     this.setState({
       [e.target.name]: e.target.value,
+    });
+  };
+
+  onToggleMarkAsImp = (e) => {
+    e.preventDefault();
+    this.setState({
+      important: this.state.important === "true" ? "false" : "true",
     });
   };
 
@@ -78,9 +88,18 @@ class AddTodo extends Component {
   onSubmit = async (dispatch, user, e) => {
     e.preventDefault();
 
-    let { title, inputFields, dueDate, label, status, finished } = this.state;
+    let {
+      title,
+      inputFields,
+      dueDate,
+      label,
+      status,
+      finished,
+      important,
+    } = this.state;
     const { id } = this.props.match.params;
     if (dueDate === "") dueDate = "0000-00-00";
+
     // check if added new item, if so set status to 'in Progress'
     status = "in progress";
     if (inputFields.every((item) => item.finished === true))
@@ -96,6 +115,7 @@ class AddTodo extends Component {
       status,
       finished,
       collapsed: false,
+      important,
     };
 
     const res = await axios.post(`/todos/update/${id}`, updatedTodo);
@@ -122,7 +142,7 @@ class AddTodo extends Component {
                   className="row m-0"
                   style={{ flexDirection: "column", alignContent: "center" }}
                 >
-                  <div className="col-md-7 col-lg-7">
+                  <div className="col-12 col-sm-12 col-md-8 col-lg-7">
                     <Spring
                       from={{
                         transform: "translate3d(-1000px,0,0) ",
@@ -144,7 +164,7 @@ class AddTodo extends Component {
                             {/* title */}
                             <div className="form-group">
                               <div className="row">
-                                <div className="col-11">
+                                <div className="col-12 col-sm-8 col-md-8 col-lg-8 mb-1">
                                   <input
                                     required
                                     name="title"
@@ -154,6 +174,20 @@ class AddTodo extends Component {
                                     onChange={this.onChange}
                                     value={this.state.title}
                                   />
+                                </div>
+                                {/* mark as imp */}
+                                <div className="col">
+                                  <button
+                                    className={classNames("btn btn-block", {
+                                      "btn-danger":
+                                        this.state.important === "true",
+                                      "btn-outline-danger":
+                                        this.state.important === "false",
+                                    })}
+                                    onClick={this.onToggleMarkAsImp}
+                                  >
+                                    Important
+                                  </button>
                                 </div>
                               </div>
                             </div>

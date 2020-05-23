@@ -13,3 +13,9 @@
 .myNavBar li {
   color: white !important;
 }
+
+.hamIcon {
+  background: #263238 !important;
+  border-color: #263238 !important;
+  color: white !important;
+}

@@ -31,12 +31,12 @@ class Header extends Component {
               </Link>
 
               <button
-                className="navbar-toggler"
+                className="hamIcon navbar-toggler"
                 type="button"
                 data-toggle="collapse"
                 data-target="#navbarNavAltMarkup"
                 style={{
-                  background: "white",
+                  // background: "white",
                   position: "fixed",
                   right: "10px",
                   top: "10px",
@@ -62,7 +62,7 @@ class Header extends Component {
                     <li className="nav-item ">
                       <span
                         onClick={this.OnLogout.bind(this, dispatch)}
-                        className="nav-link text-light "
+                        className="nav-link text-light mb-2"
                         style={{ cursor: "pointer", fontSize: 16 }}
                       >
                         Logout

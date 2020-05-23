@@ -59,6 +59,7 @@ class Todo extends Component {
       label: todo.label,
       status: todo.status,
       finished: todo.finished,
+      important: todo.important,
       collapsed: !todo.collapsed,
     };
     const res = await axios.post(`/todos/update/${todo._id}`, collapsedTodo);
@@ -178,7 +179,14 @@ class Todo extends Component {
                           <p className="font-weight-bold mb-2 p-0">
                             {todoItem.title[0].toUpperCase() +
                               todoItem.title.slice(1)}
+                            {/* imp mark */}
+                            {todoItem.important === "true" ? (
+                              <span className="badge badge-danger ml-1">
+                                Imp
+                              </span>
+                            ) : null}
                           </p>
+
                           {/* task name */}
                           {todoItem.collapsed
                             ? null

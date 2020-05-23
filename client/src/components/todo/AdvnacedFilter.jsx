@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import axios from "axios";
 import Todo from "./Todo";
 import { Spring } from "react-spring/renderprops";
+import classNames from "classnames";
 
 class AdvnacedFilter extends Component {
   constructor() {
@@ -10,6 +11,7 @@ class AdvnacedFilter extends Component {
     this.state = {
       label: "All Labels",
       status: "All Status",
+      important: "false",
       dueDate: "",
     };
 
@@ -19,6 +21,13 @@ class AdvnacedFilter extends Component {
   onChange = (e) => {
     this.setState({
       [e.target.name]: e.target.value,
+    });
+  };
+
+  onToggleMarkAsImp = (e) => {
+    e.preventDefault();
+    this.setState({
+      important: this.state.important === "true" ? "false" : "true",
     });
   };
 
@@ -32,13 +41,14 @@ class AdvnacedFilter extends Component {
   onSubmit = async (user, e) => {
     e.preventDefault();
 
-    let { label, status, dueDate } = this.state;
+    let { label, status, dueDate, important } = this.state;
 
     try {
       const res = await axios.post("/todos/search", {
         id: user.id,
         label,
         status,
+        important,
         dueDate,
       });
 
@@ -46,10 +56,11 @@ class AdvnacedFilter extends Component {
       this.setState({
         label: "All Labels",
         status: "All Status",
+        important: "false",
         dueDate: "",
       });
     } catch (err) {
-      console.log("Error: ", err);
+      console.log("Error: ", err.response.data);
     }
   };
 
@@ -193,6 +204,25 @@ class AdvnacedFilter extends Component {
                           >
                             Completed
                           </button>
+                        </div>
+                      </div>
+
+                      {/* important */}
+                      <div className="form-group m-0">
+                        <div className="row m-0">
+                          <div className="col p-0">
+                            <button
+                              className={classNames("btn btn-block", {
+                                "btn-secondary":
+                                  this.state.important === "true",
+                                "btn-outline-secondary":
+                                  this.state.important === "false",
+                              })}
+                              onClick={this.onToggleMarkAsImp}
+                            >
+                              Mark as Important
+                            </button>
+                          </div>
                         </div>
                       </div>
 
