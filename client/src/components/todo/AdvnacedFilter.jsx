@@ -35,7 +35,7 @@ class AdvnacedFilter extends Component {
     let { label, status, dueDate } = this.state;
 
     try {
-      const res = await axios.post("http://localhost:5000/todos/search", {
+      const res = await axios.post("/todos/search", {
         id: user.id,
         label,
         status,

@@ -24,7 +24,7 @@ class AddTodo extends Component {
   async componentDidMount() {
     const { id } = this.props.match.params;
 
-    const fetchedData = await axios.get(`http://localhost:5000/todos/${id}`);
+    const fetchedData = await axios.get(`/todos/${id}`);
     console.log("fetched data: ", fetchedData.data);
     this.setState({
       title: fetchedData.data.title,
@@ -98,10 +98,7 @@ class AddTodo extends Component {
       collapsed: false,
     };
 
-    const res = await axios.post(
-      `http://localhost:5000/todos/update/${id}`,
-      updatedTodo
-    );
+    const res = await axios.post(`/todos/update/${id}`, updatedTodo);
     console.log("updated todo: ", updatedTodo);
     dispatch({
       type: "UPDATE_TODO",

@@ -73,7 +73,7 @@ class AddTodo extends Component {
       status: "new",
     };
 
-    const res = await axios.post("http://localhost:5000/todos/add", newTodo);
+    const res = await axios.post("/todos/add", newTodo);
     console.log("Added: ", res.data);
     dispatch({
       type: "ADD_TODO",

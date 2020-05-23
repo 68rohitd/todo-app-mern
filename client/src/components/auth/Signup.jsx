@@ -32,7 +32,7 @@ class Signup extends Component {
     const { email, password, passwordCheck, displayName } = this.state;
 
     try {
-      const newUser = await axios.post("http://localhost:5000/users/register", {
+      const newUser = await axios.post("/users/register", {
         email,
         password,
         passwordCheck,
@@ -40,17 +40,17 @@ class Signup extends Component {
       });
       console.log("created acc successfully: ", newUser.data);
       // now login the user
-      const loggedInUser = await axios.post(
-        "http://localhost:5000/users/login",
-        { email, password }
-      );
+      const loggedInUser = await axios.post("/users/login", {
+        email,
+        password,
+      });
       console.log("logged in successfully: ", loggedInUser.data);
 
       localStorage.setItem("auth-token", loggedInUser.data.token);
 
       // getting user todos
       const userTodos = await axios.get(
-        `http://localhost:5000/todos/user/${loggedInUser.data.user.id}`
+        `/todos/user/${loggedInUser.data.user.id}`
       );
       console.log("logged in users todos: ", userTodos.data);
       dispatch({

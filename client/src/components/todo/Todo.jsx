@@ -9,7 +9,7 @@ import "../../assets/todo-styles/todo.css";
 class Todo extends Component {
   onDelete(id, dispatch) {
     axios
-      .delete(`http://localhost:5000/todos/${id}`)
+      .delete(`/todos/${id}`)
       .then((res) => console.log(res.data))
       .catch((err) => console.log(err));
 
@@ -41,10 +41,7 @@ class Todo extends Component {
       todo.status = "new";
     }
 
-    const res = await axios.post(
-      `http://localhost:5000/todos/update/${todo._id}`,
-      todo
-    );
+    const res = await axios.post(`/todos/update/${todo._id}`, todo);
     console.log("UPdated Todo: ", res.data);
 
     dispatch({
@@ -64,10 +61,7 @@ class Todo extends Component {
       finished: todo.finished,
       collapsed: !todo.collapsed,
     };
-    const res = await axios.post(
-      `http://localhost:5000/todos/update/${todo._id}`,
-      collapsedTodo
-    );
+    const res = await axios.post(`/todos/update/${todo._id}`, collapsedTodo);
     dispatch({
       type: "UPDATE_TODO",
       payload: res.data,

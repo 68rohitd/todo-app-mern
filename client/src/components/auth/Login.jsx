@@ -41,7 +41,7 @@ class Login extends Component {
 
       // getting user todos
       const userTodos = await axios.get(
-        `http://localhost:5000/todos/user/${loggedInUser.data.user.id}`
+        `/todos/user/${loggedInUser.data.user.id}`
       );
       console.log("logged in users todos: ", userTodos.data);
       dispatch({
