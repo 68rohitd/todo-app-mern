@@ -50,6 +50,32 @@ class Todo extends Component {
     });
   };
 
+  onMarkAsComplete = async (todo, dispatch) => {
+    if (todo.finished) {
+      //if todo is already checked
+      todo.finished = false;
+      todo.status = "new";
+      todo.todoName.map((task) => {
+        return (task.finished = false);
+      });
+    } else {
+      //if todo is not checked
+      todo.finished = true;
+      todo.status = "completed";
+      todo.todoName.map((task) => {
+        return (task.finished = true);
+      });
+    }
+
+    const res = await axios.post(`/todos/update/${todo._id}`, todo);
+    console.log("UPdated Todo: ", res.data);
+
+    dispatch({
+      type: "UPDATE_TODO",
+      payload: res.data,
+    });
+  };
+
   onCollapsed = async (todo, dispatch) => {
     const collapsedTodo = {
       userId: todo.userId,
@@ -86,11 +112,6 @@ class Todo extends Component {
         borderLeftColor: colors[todoItem.label],
         marginBottom: 5,
       },
-      collapsedIcon: {
-        fontSize: 20,
-        cursor: "pointer",
-        fontWeight: "bold",
-      },
     };
     return (
       <Consumer>
@@ -110,11 +131,10 @@ class Todo extends Component {
                         <div className="col-1">
                           {/* collapse icon */}
                           <i
-                            className={classNames({
+                            className={classNames("myIcon", {
                               "fa fa-angle-down": todoItem.collapsed,
                               "fa fa-angle-up": !todoItem.collapsed,
                             })}
-                            style={{ ...styles.collapsedIcon, color: "grey" }}
                             onClick={() => this.onCollapsed(todoItem, dispatch)}
                           ></i>
                         </div>
@@ -137,28 +157,29 @@ class Todo extends Component {
                         </div>
 
                         <div className="col-1">
+                          {/* mark as complete icon */}
+                          <i
+                            className={classNames("myIcon fa fa-check", {
+                              "text-success": todoItem.finished,
+                              "text-dark": !todoItem.finished,
+                            })}
+                            onClick={() =>
+                              this.onMarkAsComplete(todoItem, dispatch)
+                            }
+                          ></i>
+                        </div>
+
+                        <div className="col-1">
                           {/* edit icon */}
                           <Link to={`/edit/${todoItem._id}`}>
-                            <i
-                              className="fa fa-pencil"
-                              style={{
-                                fontSize: 20,
-                                cursor: "pointer",
-                                color: "grey",
-                              }}
-                            ></i>
+                            <i className={"myIcon fa fa-pencil text-dark"}></i>
                           </Link>
                         </div>
 
                         <div className="col-1">
                           {/* delete icon */}
                           <i
-                            className="fa fa-times"
-                            style={{
-                              fontSize: 20,
-                              cursor: "pointer",
-                              color: "red",
-                            }}
+                            className="myIcon fa fa-times text-danger"
                             onClick={this.onDelete.bind(
                               this,
                               todoItem._id,
