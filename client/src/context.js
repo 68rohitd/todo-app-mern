@@ -70,23 +70,17 @@ export class Provider extends Component {
       token = "";
     }
     try {
-      const tokenRes = await axios.post(
-        "http://localhost:5000/users/tokenIsValid",
-        null,
-        {
-          headers: { "x-auth-token": token },
-        }
-      );
+      const tokenRes = await axios.post("/users/tokenIsValid", null, {
+        headers: { "x-auth-token": token },
+      });
       if (tokenRes.data) {
         //logged in
-        const userRes = await axios.get("http://localhost:5000/users", {
+        const userRes = await axios.get("/users", {
           headers: { "x-auth-token": token },
         });
 
         // token valid, so get logged in users todos...
-        const userTodos = await axios.get(
-          `http://localhost:5000/todos/user/${userRes.data.id}`
-        );
+        const userTodos = await axios.get(`/todos/user/${userRes.data.id}`);
         this.setState({
           token,
           user: userRes.data,
