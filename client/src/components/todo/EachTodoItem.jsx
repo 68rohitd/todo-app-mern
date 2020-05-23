@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Spring, Transition } from "react-spring/renderprops";
+import { Spring } from "react-spring/renderprops";
 
 export default class EachTodoItem extends Component {
   constructor() {

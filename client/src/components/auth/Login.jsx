@@ -30,10 +30,10 @@ class Login extends Component {
     const { email, password } = this.state;
 
     try {
-      const loggedInUser = await axios.post(
-        "http://localhost:5000/users/login",
-        { email, password }
-      );
+      const loggedInUser = await axios.post("//localhost:5000/users/login", {
+        email,
+        password,
+      });
       console.log("logged in successfully: ", loggedInUser.data);
 
       localStorage.setItem("auth-token", loggedInUser.data.token);
@@ -59,7 +59,7 @@ class Login extends Component {
         disabled: false,
       });
 
-      console.log("ERROR: ", err);
+      console.log("ERROR: ", err.response.data);
       this.setState({ error: err.response.data.msg });
     }
   };
