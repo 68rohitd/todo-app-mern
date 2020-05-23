@@ -30,7 +30,7 @@ class Login extends Component {
     const { email, password } = this.state;
 
     try {
-      const loggedInUser = await axios.post("//localhost:5000/users/login", {
+      const loggedInUser = await axios.post("/users/login", {
         email,
         password,
       });
