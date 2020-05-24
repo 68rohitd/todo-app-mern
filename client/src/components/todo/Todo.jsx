@@ -24,7 +24,7 @@ class Todo extends Component {
     return date.toDateString() + ", " + date.toLocaleTimeString();
   };
 
-  onEachItemFinished = async (todo, item, dispatch) => {
+  onEachItemFinished = (todo, item, dispatch) => {
     todo.todoName.map((obj) => {
       if (obj.itemName === item.itemName) return (obj.finished = !obj.finished);
       return obj;
@@ -40,17 +40,18 @@ class Todo extends Component {
     if (todo.todoName.every((item) => item.finished === false)) {
       todo.status = "new";
     }
-
-    const res = await axios.post(`/todos/update/${todo._id}`, todo);
-    console.log("UPdated Todo: ", res.data);
+    axios
+      .post(`/todos/update/${todo._id}`, todo)
+      .then((res) => console.log("updated todo: ", res.data))
+      .catch((err) => console.log(err));
 
     dispatch({
       type: "UPDATE_TODO",
-      payload: res.data,
+      payload: todo,
     });
   };
 
-  onMarkAsComplete = async (todo, dispatch) => {
+  onMarkAsComplete = (todo, dispatch) => {
     if (todo.finished) {
       //if todo is already checked
       todo.finished = false;
@@ -67,31 +68,27 @@ class Todo extends Component {
       });
     }
 
-    const res = await axios.post(`/todos/update/${todo._id}`, todo);
-    console.log("UPdated Todo: ", res.data);
+    axios
+      .post(`/todos/update/${todo._id}`, todo)
+      .then((res) => console.log("updated todo: ", res.data))
+      .catch((err) => console.log(err));
 
     dispatch({
       type: "UPDATE_TODO",
-      payload: res.data,
+      payload: todo,
     });
   };
 
-  onCollapsed = async (todo, dispatch) => {
-    const collapsedTodo = {
-      userId: todo.userId,
-      title: todo.title,
-      todoName: todo.todoName,
-      dueDate: todo.dueDate,
-      label: todo.label,
-      status: todo.status,
-      finished: todo.finished,
-      important: todo.important,
-      collapsed: !todo.collapsed,
-    };
-    const res = await axios.post(`/todos/update/${todo._id}`, collapsedTodo);
+  onCollapsed = (todo, dispatch) => {
+    todo.collapsed = !todo.collapsed;
+
+    axios
+      .post(`/todos/update/${todo._id}`, todo)
+      .catch((err) => console.log(err));
+
     dispatch({
       type: "UPDATE_TODO",
-      payload: res.data,
+      payload: todo,
     });
   };
 
