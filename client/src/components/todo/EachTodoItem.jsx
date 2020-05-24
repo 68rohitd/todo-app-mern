@@ -52,7 +52,7 @@ export default class EachTodoItem extends Component {
           {(props) => (
             <div style={props}>
               <div className="row">
-                <div className="col-8">
+                <div className="col-10 col-sm-8 col-md-8 col-lg-8">
                   <input
                     style={{ marginBottom: 6 }}
                     className="form-control"
@@ -66,7 +66,7 @@ export default class EachTodoItem extends Component {
                 </div>
 
                 {/* delete todo btn */}
-                <div className="col">
+                <div className="col mr-4">
                   <i
                     className="fa fa-times"
                     style={{

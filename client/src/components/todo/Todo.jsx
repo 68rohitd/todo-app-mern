@@ -25,11 +25,8 @@ class Todo extends Component {
     return date.toDateString() + ", " + date.toLocaleTimeString();
   };
 
-  onEachItemFinished = (todo, item, dispatch) => {
-    todo.todoName.map((obj) => {
-      if (obj.itemName === item.itemName) return (obj.finished = !obj.finished);
-      return obj;
-    });
+  onEachItemFinished = (todo, item, index, dispatch) => {
+    todo.todoName[index].finished = !todo.todoName[index].finished;
 
     // by default, status will be in progress
     todo.status = "in progress";
@@ -43,7 +40,7 @@ class Todo extends Component {
     }
     axios
       .post(`/todos/update/${todo._id}`, todo)
-      .then((res) => console.log("updated todo: ", res.data))
+      // .then((res) => console.log("updated todo: ", res.data))
       .catch((err) => console.log(err));
 
     dispatch({
@@ -231,6 +228,7 @@ class Todo extends Component {
                                                 this.onEachItemFinished(
                                                   todoItem,
                                                   item,
+                                                  index,
                                                   dispatch
                                                 )
                                               }

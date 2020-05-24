@@ -28,15 +28,18 @@ class AddTodo extends Component {
 
     const fetchedData = await axios.get(`/todos/${id}`);
     console.log("fetched data: ", fetchedData.data);
-    this.setState({
-      title: fetchedData.data.title,
-      inputFields: fetchedData.data.todoName,
-      dueDate: fetchedData.data.dueDate,
-      label: fetchedData.data.label,
-      status: fetchedData.data.status,
-      finished: fetchedData.data.finished,
-      important: fetchedData.data.important,
-    });
+
+    setTimeout(() => {
+      this.setState({
+        title: fetchedData.data.title,
+        inputFields: fetchedData.data.todoName,
+        dueDate: fetchedData.data.dueDate,
+        label: fetchedData.data.label,
+        status: fetchedData.data.status,
+        finished: fetchedData.data.finished,
+        important: fetchedData.data.important,
+      });
+    }, 350);
   }
 
   onChangeInputFields = (index) => (e) => {
@@ -150,7 +153,7 @@ class AddTodo extends Component {
                       to={{
                         transform: "translate3d(0px,0,0) ",
                       }}
-                      config={{ friction: 20, delay: 200 }}
+                      config={{ friction: 20 }}
                     >
                       {(props) => (
                         <div style={props}>
