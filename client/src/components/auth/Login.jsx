@@ -43,7 +43,7 @@ class Login extends Component {
       const userTodos = await axios.get(
         `/todos/user/${loggedInUser.data.user.id}`
       );
-      console.log("logged in users todos: ", userTodos.data);
+
       dispatch({
         type: "LOGGED_IN",
         payload: {

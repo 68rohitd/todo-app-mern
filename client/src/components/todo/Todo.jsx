@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import ReactTooltip from "react-tooltip";
 import { Consumer } from "../../context";
 import axios from "axios";
 import classNames from "classnames";
@@ -155,7 +156,10 @@ class Todo extends Component {
 
                         <div className="col-1">
                           {/* mark as complete icon */}
+                          <ReactTooltip place="bottom" delayShow={1000} />
+
                           <i
+                            data-tip="mark all tasks as completed"
                             className={classNames("myIcon fa fa-check", {
                               "text-success": todoItem.finished,
                               "text-dark": !todoItem.finished,
@@ -169,7 +173,10 @@ class Todo extends Component {
                         <div className="col-1">
                           {/* edit icon */}
                           <Link to={`/edit/${todoItem._id}`}>
-                            <i className={"myIcon fa fa-pencil text-dark"}></i>
+                            <i
+                              data-tip="edit task"
+                              className={"myIcon fa fa-pencil text-dark"}
+                            ></i>
                           </Link>
                         </div>
 

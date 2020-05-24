@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 let auth = require("../middleware/auth");
 let User = require("../models/user.model");
+let Todos = require("../models/todos.model");
 
 // @desc: register a user
 router.post("/register", async (req, res) => {
@@ -83,10 +84,16 @@ router.post("/login", async (req, res) => {
 });
 
 // @desc: delete a user account
-router.delete("/delete", auth, async (req, res) => {
+router.delete("/delete/:id", auth, async (req, res) => {
   try {
+    console.log("id: ", req.user);
     const deletedUser = await User.findByIdAndDelete(req.user);
     res.json(deletedUser);
+
+    // delete this users todos too
+    await Todos.deleteMany({ userId: req.user }).catch(function (err) {
+      console.log(err);
+    });
   } catch (err) {
     res.status(500).json({ err: err.message });
   }

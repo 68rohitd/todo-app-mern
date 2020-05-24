@@ -1,16 +1,43 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import { Consumer } from "../../context";
 import "../../assets/header-styles/header.css";
 
 class Header extends Component {
   OnLogout = (dispatch) => {
     localStorage.setItem("auth-token", "");
+    localStorage.setItem("userId", "");
     console.log("Logged out!");
 
     dispatch({
       type: "LOGGED_OUT",
     });
+  };
+
+  OnDeleteAccount = async (dispatch) => {
+    const reply = prompt("To delete your acccount type 'yes'");
+
+    if (reply === "yes") {
+      const token = localStorage.getItem("auth-token");
+      const userId = localStorage.getItem("userId");
+
+      try {
+        await axios.delete(`/users/delete/${userId}`, {
+          headers: { "x-auth-token": token },
+        });
+
+        localStorage.setItem("auth-token", "");
+        localStorage.setItem("userId", "");
+
+        console.log("sorry to see you go");
+        dispatch({
+          type: "LOGGED_OUT",
+        });
+      } catch (err) {
+        console.log(err.response.data);
+      }
+    }
   };
 
   render() {
@@ -36,7 +63,6 @@ class Header extends Component {
                 data-toggle="collapse"
                 data-target="#navbarNavAltMarkup"
                 style={{
-                  // background: "white",
                   position: "fixed",
                   right: "10px",
                   top: "10px",
@@ -59,15 +85,27 @@ class Header extends Component {
                   </li>
                   {/* logout */}
                   {token ? (
-                    <li className="nav-item ">
-                      <span
-                        onClick={this.OnLogout.bind(this, dispatch)}
-                        className="nav-link text-light mb-2"
-                        style={{ cursor: "pointer", fontSize: 16 }}
-                      >
-                        Logout
-                      </span>
-                    </li>
+                    <>
+                      <li className="nav-item ">
+                        <span
+                          onClick={this.OnLogout.bind(this, dispatch)}
+                          className="nav-link text-light mb-2"
+                          style={{ cursor: "pointer", fontSize: 16 }}
+                        >
+                          Logout
+                        </span>
+                      </li>
+                      {/* delete account */}
+                      <li className="nav-item ">
+                        <span
+                          onClick={this.OnDeleteAccount.bind(this, dispatch)}
+                          className="nav-link text-light mb-2"
+                          style={{ cursor: "pointer", fontSize: 16 }}
+                        >
+                          Delete account
+                        </span>
+                      </li>
+                    </>
                   ) : (
                     // signup or sign in
                     <>

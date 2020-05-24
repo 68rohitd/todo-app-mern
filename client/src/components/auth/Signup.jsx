@@ -47,6 +47,7 @@ class Signup extends Component {
       console.log("logged in successfully: ", loggedInUser.data);
 
       localStorage.setItem("auth-token", loggedInUser.data.token);
+      localStorage.setItem("userId", loggedInUser.data.user.id);
 
       // getting user todos
       const userTodos = await axios.get(
