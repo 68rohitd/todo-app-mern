@@ -105,3 +105,9 @@ body {
   font-weight: bold;
   margin-bottom: 0 !important;
 }
+
+.correctContainer {
+  color: green;
+  margin-right: 20px !important;
+  align-self: center !important;
+}

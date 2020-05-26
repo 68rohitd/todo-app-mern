@@ -18,6 +18,11 @@ class Signup extends Component {
       displayName: "",
       error: "",
       disabled: false,
+
+      // validation
+      emailCheck: false,
+      password1Check: false,
+      password2Check: false,
     };
   }
 
@@ -74,7 +79,27 @@ class Signup extends Component {
     }
   };
 
-  onChange = (e) => this.setState({ [e.target.name]: e.target.value });
+  onChange = (e) => {
+    const { name, value } = e.target;
+
+    this.setState({ [e.target.name]: e.target.value }, () => {
+      if (name === "email") {
+        if (this.state.email.includes("@")) {
+          if (this.state.email.includes(".")) {
+            this.setState({ emailCheck: true });
+          }
+        } else this.setState({ emailCheck: false });
+      } else if (name === "password") {
+        if (this.state.password.length >= 6) {
+          this.setState({ password1Check: true });
+        } else this.setState({ password1Check: false });
+      } else if (name === "passwordCheck") {
+        if (this.state.password === this.state.passwordCheck) {
+          this.setState({ password2Check: true });
+        } else this.setState({ password2Check: false });
+      }
+    });
+  };
 
   render() {
     const { error } = this.state;
@@ -115,48 +140,89 @@ class Signup extends Component {
                                 {error}
                               </div>
                             ) : null}
-                            {/* email */}
-                            <input
-                              type="email"
-                              name="email"
-                              className="form-control mb-3 mt-4"
-                              placeholder="Email id"
-                              onChange={this.onChange}
-                              required
-                            />
-                            {/* password */}
-                            <input
-                              name="password"
-                              type="password"
-                              className="form-control mb-3"
-                              placeholder="password"
-                              onChange={this.onChange}
-                              required
-                            />
-                            {/* re-enter password */}
-                            <input
-                              name="passwordCheck"
-                              type="password"
-                              className="form-control mb-3"
-                              placeholder="re-enter password"
-                              onChange={this.onChange}
-                              required
-                            />
-                            {/* display name */}
-                            <input
-                              name="displayName"
-                              type="text"
-                              className="form-control mb-3"
-                              placeholder="display name"
-                              onChange={this.onChange}
-                            />
-                            {/* submit */}
-                            <input
-                              disabled={this.state.disabled}
-                              type="submit"
-                              value="Signup"
-                              className="btn btn-success btn-block mt-5"
-                            />
+
+                            <div className="col">
+                              <div className="row">
+                                {/* email */}
+                                <div className="col">
+                                  <input
+                                    type="email"
+                                    name="email"
+                                    className="form-control mb-3 mt-4"
+                                    placeholder="Email id"
+                                    onChange={this.onChange}
+                                    required
+                                  />
+                                </div>
+                                <div className="col-1 correctContainer">
+                                  {this.state.emailCheck ? (
+                                    <i className="fa fa-check"></i>
+                                  ) : null}
+                                </div>
+                              </div>
+
+                              {/* password */}
+                              <div className="row">
+                                <div className="col">
+                                  <input
+                                    name="password"
+                                    type="password"
+                                    className="form-control mb-3"
+                                    placeholder="Password"
+                                    onChange={this.onChange}
+                                    required
+                                  />
+                                </div>
+                                <div className="col-1 correctContainer">
+                                  {this.state.password1Check ? (
+                                    <i className="fa fa-check"></i>
+                                  ) : null}
+                                </div>
+                              </div>
+
+                              {/* re-enter password */}
+                              <div className="row">
+                                <div className="col">
+                                  <input
+                                    name="passwordCheck"
+                                    type="password"
+                                    className="form-control mb-3"
+                                    placeholder="Re-enter password"
+                                    onChange={this.onChange}
+                                    required
+                                  />
+                                </div>
+                                <div className="col-1 correctContainer">
+                                  {this.state.password2Check ? (
+                                    <i className="fa fa-check"></i>
+                                  ) : null}
+                                </div>
+                              </div>
+
+                              <div className="row">
+                                <div className="col">
+                                  {/* display name */}
+                                  <input
+                                    name="displayName"
+                                    type="text"
+                                    className="form-control mb-3"
+                                    placeholder="Display name (optional)"
+                                    onChange={this.onChange}
+                                  />
+                                </div>
+                                <div className="col-1 correctContainer"></div>
+                              </div>
+
+                              <div className="row">
+                                {/* submit */}
+                                <input
+                                  disabled={this.state.disabled}
+                                  type="submit"
+                                  value="Signup"
+                                  className="btn btn-success btn-block mt-5"
+                                />
+                              </div>
+                            </div>
                           </form>
                         </div>
                       </div>

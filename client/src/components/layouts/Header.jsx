@@ -51,7 +51,7 @@ class Header extends Component {
 
           return (
             <nav className="myNavBar navbar sticky-top navbar-expand-lg navbar-light">
-              <Link to="/" className="navbar-brand text-light block">
+              <Link to="/" className="navbar-brand text-light block mx-4">
                 <span style={{ display: "block", fontFamily: "Yesteryear" }}>
                   {branding}
                 </span>
