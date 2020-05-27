@@ -3,9 +3,10 @@ import { Consumer } from "../../context";
 import { Redirect } from "react-router-dom";
 import axios from "axios";
 import { Spring } from "react-spring/renderprops";
-import loginSVG from "../../assets/login-signup-styles/login3.svg";
+// import loginSVG from "../../assets/login-signup-styles/login3.svg";
 import loginAvatar from "../../assets/login-signup-styles/loginAvatar.png";
 import "../../assets/login-signup-styles/login-signup.css";
+import notes from "../../assets/images/notes.svg";
 
 class Signup extends Component {
   constructor() {
@@ -80,14 +81,14 @@ class Signup extends Component {
   };
 
   onChange = (e) => {
-    const { name, value } = e.target;
+    const { name } = e.target;
 
     this.setState({ [e.target.name]: e.target.value }, () => {
       if (name === "email") {
         if (this.state.email.includes("@")) {
           if (this.state.email.includes(".")) {
             this.setState({ emailCheck: true });
-          }
+          } else this.setState({ emailCheck: false });
         } else this.setState({ emailCheck: false });
       } else if (name === "password") {
         if (this.state.password.length >= 6) {
@@ -112,14 +113,18 @@ class Signup extends Component {
 
           if (!token) {
             return (
-              <div className="row m-0">
-                <div className="col">
-                  <img className="loginSVG" src={loginSVG} alt="login.svg" />
-                </div>
-                <div className="col-12 col-sm-12 col-md-4">
-                  <Spring from={{ opacity: 0 }} to={{ opacity: 1 }}>
-                    {(props) => (
-                      <div style={props}>
+              <Spring
+                from={{ opacity: 0 }}
+                to={{ opacity: 1 }}
+                config={{ duration: 300 }}
+              >
+                {(props) => (
+                  <div style={props}>
+                    <div className="row m-0">
+                      <div className="col">
+                        <img className="signUpSVG" src={notes} alt="" />
+                      </div>
+                      <div className="col-12 col-sm-12 col-md-4">
                         <div className="container">
                           <form
                             className="signUpForm "
@@ -148,17 +153,17 @@ class Signup extends Component {
                                   <input
                                     type="email"
                                     name="email"
-                                    className="form-control mb-3 mt-4"
+                                    className="form-control mb-3 "
                                     placeholder="Email id"
                                     onChange={this.onChange}
                                     required
                                   />
                                 </div>
-                                <div className="col-1 correctContainer">
-                                  {this.state.emailCheck ? (
+                                {this.state.emailCheck ? (
+                                  <div className="col-1 correctContainer">
                                     <i className="fa fa-check"></i>
-                                  ) : null}
-                                </div>
+                                  </div>
+                                ) : null}
                               </div>
 
                               {/* password */}
@@ -173,11 +178,11 @@ class Signup extends Component {
                                     required
                                   />
                                 </div>
-                                <div className="col-1 correctContainer">
-                                  {this.state.password1Check ? (
+                                {this.state.password1Check ? (
+                                  <div className="col-1 correctContainer">
                                     <i className="fa fa-check"></i>
-                                  ) : null}
-                                </div>
+                                  </div>
+                                ) : null}
                               </div>
 
                               {/* re-enter password */}
@@ -192,11 +197,11 @@ class Signup extends Component {
                                     required
                                   />
                                 </div>
-                                <div className="col-1 correctContainer">
-                                  {this.state.password2Check ? (
+                                {this.state.password2Check ? (
+                                  <div className="col-1 correctContainer">
                                     <i className="fa fa-check"></i>
-                                  ) : null}
-                                </div>
+                                  </div>
+                                ) : null}
                               </div>
 
                               <div className="row">
@@ -210,7 +215,7 @@ class Signup extends Component {
                                     onChange={this.onChange}
                                   />
                                 </div>
-                                <div className="col-1 correctContainer"></div>
+                                {/* <div className="col-1 correctContainer"></div> */}
                               </div>
 
                               <div className="row">
@@ -219,18 +224,18 @@ class Signup extends Component {
                                   disabled={this.state.disabled}
                                   type="submit"
                                   value="Signup"
-                                  className="btn btn-success btn-block mt-5"
+                                  className="btn btn-success "
                                 />
                               </div>
                             </div>
                           </form>
                         </div>
                       </div>
-                    )}
-                  </Spring>
-                </div>
-                <div className="col-1"></div>
-              </div>
+                      <div className="col-1"></div>
+                    </div>
+                  </div>
+                )}
+              </Spring>
             );
           } else {
             return <Redirect to="/" />;

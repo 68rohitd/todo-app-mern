@@ -1,20 +1,29 @@
 .addBtn {
   background-color: #263238 !important;
   border-color: #263238 !important;
-
-  width: 50px !important;
+  float: right !important;
+  border-radius: 12px 0 0 12px !important;
+  width: 100px !important;
+  height: 50px !important;
+  right: 0 !important;
+  left: 0 !important;
   transition: width 0.3s !important;
+  /* position: fixed; */
 }
 .addBtn:hover {
-  width: 80px !important;
+  width: 130px !important;
 }
 
 .searchBtn {
   background-color: #263238 !important;
   border-color: #263238 !important;
-
+  /* float: left !important; */
   width: 50px !important;
+  height: 50px !important;
+  left: 0 !important;
+  border-radius: 0 12px 12px 0 !important;
   transition: width 0.3s !important;
+  /* position: fixed; */
 }
 .searchBtn:hover {
   width: 80px !important;
@@ -23,4 +32,31 @@
 /* badges */
 .badgeContainer button {
   width: 140px !important;
+}
+.badgeContainer {
+  z-index: 100;
+  height: 50px;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.topRow {
+  position: fixed;
+  right: 0 !important;
+  left: 0 !important;
+  z-index: 10;
+  background-color: #eceff1;
+}
+
+.todoContainer {
+  margin-top: 140px;
+}
+
+.advancedFilterContainer {
+  margin-top: 140px;
+}
+
+.searchForm {
+  position: relative;
+  /* z-index: 100; */
 }

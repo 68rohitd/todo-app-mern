@@ -16,6 +16,7 @@ class Todo extends Component {
     };
 
     this.synth = window.speechSynthesis;
+    this.dueAlert = false;
   }
   onDelete(id, dispatch) {
     axios
@@ -101,7 +102,7 @@ class Todo extends Component {
 
   onSpeak = (todoItem) => {
     if (!this.synth.speaking) {
-      const speed = 1.5;
+      const speed = 1.3;
       this.setState(
         {
           playing: true,
@@ -149,8 +150,24 @@ class Todo extends Component {
     }
   }
 
+  getDateDiff = (dueDate) => {
+    let today = new Date();
+    today = new Date(today.toLocaleDateString());
+    let due = dueDate.replace(/-/g, "/");
+    let future = new Date(due);
+
+    const Difference_In_Time = future.getTime() - today.getTime();
+    const Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+
+    if (Difference_In_Days >= 0 && Difference_In_Days <= 1)
+      this.dueAlert = true;
+  };
+
   render() {
     const { todoItem } = this.props;
+
+    // get date diff to set alert
+    if (todoItem.dueDate !== "0000-00-00") this.getDateDiff(todoItem.dueDate);
 
     // style
     let colors = {
@@ -171,6 +188,7 @@ class Todo extends Component {
       <Consumer>
         {(value) => {
           const { dispatch } = value;
+
           return (
             <Spring
               from={{ opacity: 0 }}
@@ -336,7 +354,13 @@ class Todo extends Component {
                           <div className="dateCol col-12 col-sm-4 col-md-4">
                             <div className="dateInfo">
                               <p className="text-muted m-0 p-0">Due Date</p>
-                              <p>{todoItem.dueDate}</p>
+                              <p
+                                className={classNames({
+                                  "text-danger font-weight-bold": this.dueAlert,
+                                })}
+                              >
+                                {todoItem.dueDate}
+                              </p>
                             </div>
                           </div>
                         ) : null}

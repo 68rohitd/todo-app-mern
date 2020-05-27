@@ -3,6 +3,7 @@ import axios from "axios";
 import Todo from "./Todo";
 import { Spring } from "react-spring/renderprops";
 import classNames from "classnames";
+import "../../assets/todos-styles/todos.css";
 
 class AdvnacedFilter extends Component {
   constructor() {
@@ -64,6 +65,13 @@ class AdvnacedFilter extends Component {
     }
   };
 
+  _onFocus = (e) => {
+    e.currentTarget.type = "date";
+  };
+  _onBlur = (e) => {
+    e.currentTarget.type = "text";
+  };
+
   render() {
     const { user, todos, currList } = this.props;
 
@@ -99,7 +107,7 @@ class AdvnacedFilter extends Component {
     return (
       <>
         <hr style={{ width: "90%" }} />
-        <div className="container ">
+        <div className="container advancedFilterContainer">
           <div className="row">
             <div className="col-12 col-sm-12 col-md-4 d-flex justify-content-center">
               <Spring
@@ -109,7 +117,10 @@ class AdvnacedFilter extends Component {
               >
                 {(props) => (
                   <div style={props}>
-                    <form onSubmit={this.onSubmit.bind(this, user)}>
+                    <form
+                      className="searchForm"
+                      onSubmit={this.onSubmit.bind(this, user)}
+                    >
                       {/* label */}
                       <div className="btn-group mb-2">
                         <button
@@ -165,7 +176,8 @@ class AdvnacedFilter extends Component {
                       {/* status */}
                       <div className="btn-group mb-2">
                         <button
-                          className="btn dropdown-toggle btn-outline-secondary ml-1"
+                          className="btn dropdown-toggle btn-outline-secondary ml-3"
+                          // style={{ marginRight: "10px" }}
                           type="button"
                           id="dropdownMenuButton"
                           data-toggle="dropdown"
@@ -220,7 +232,7 @@ class AdvnacedFilter extends Component {
                               })}
                               onClick={this.onToggleMarkAsImp}
                             >
-                              Mark as Important
+                              Marked as Important
                             </button>
                           </div>
                         </div>
@@ -230,20 +242,17 @@ class AdvnacedFilter extends Component {
                       <div className="form-group m-0">
                         <div className="row m-0">
                           <div className="col p-0">
-                            <label
-                              htmlFor="dueDate"
-                              style={{ marginBottom: 0 }}
-                            >
-                              Due Date <br />
-                            </label>
                             <input
+                              onFocus={this._onFocus}
+                              onBlur={this._onBlur}
+                              placeholder="Due date"
                               name="dueDate"
-                              type="date"
+                              type="text"
                               style={{
                                 borderColor: "#47535E",
                                 backgroundColor: "#eceff1",
                               }}
-                              className="form-control"
+                              className="form-control mt-2"
                               value={this.state.dueDate}
                               onChange={this.onChange}
                             />

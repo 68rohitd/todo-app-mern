@@ -23,7 +23,7 @@ router.route("/search/").post((req, res) => {
   if (i === "false") i = new RegExp(/.+/s);
   if (d === "") d = new RegExp(/.+/s);
 
-  console.log(l, s, i, d);
+  // console.log(l, s, i, d);
 
   Todos.find({
     userId: req.body.id,

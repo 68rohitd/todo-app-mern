@@ -3,9 +3,10 @@ import { Redirect } from "react-router-dom";
 import axios from "axios";
 import { Consumer } from "../../context";
 import { Spring } from "react-spring/renderprops";
-import loginSVG from "../../assets/login-signup-styles/login3.svg";
+// import loginSVG from "../../assets/login-signup-styles/login3.svg";
 import loginAvatar from "../../assets/login-signup-styles/loginAvatar.png";
 import "../../assets/login-signup-styles/login-signup.css";
+import authentication from "../../assets/images/authentication.svg";
 
 class Login extends Component {
   constructor() {
@@ -76,14 +77,18 @@ class Login extends Component {
 
           if (!token) {
             return (
-              <div className="row m-0">
-                <div className="col">
-                  <img className="loginSVG" src={loginSVG} alt="login.svg" />
-                </div>
-                <div className="col-12 col-sm-12 col-md-4">
-                  <Spring from={{ opacity: 0 }} to={{ opacity: 1 }}>
-                    {(props) => (
-                      <div style={props}>
+              <Spring
+                from={{ opacity: 0 }}
+                to={{ opacity: 1 }}
+                config={{ duration: 300 }}
+              >
+                {(props) => (
+                  <div style={props}>
+                    <div className="row m-0">
+                      <div className="col">
+                        <img className="loginSVG" src={authentication} alt="" />
+                      </div>
+                      <div className="col-12 col-sm-12 col-md-4">
                         <div className="container">
                           <form
                             className="loginForm "
@@ -123,16 +128,16 @@ class Login extends Component {
                               disabled={this.state.disabled}
                               type="submit"
                               value="Login"
-                              className="btn btn-success btn-block mt-5"
+                              className="btn btn-success btn-block mt-3"
                             />
                           </form>
                         </div>
                       </div>
-                    )}
-                  </Spring>
-                </div>
-                <div className="col-1"></div>
-              </div>
+                      <div className="col-1"></div>
+                    </div>
+                  </div>
+                )}
+              </Spring>
             );
           } else {
             return <Redirect to="/" />;
