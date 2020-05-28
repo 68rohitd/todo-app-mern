@@ -22,7 +22,7 @@ class Todo extends Component {
     axios
       .delete(`/todos/${id}`)
       .then((res) => console.log(res.data))
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err.response));
 
     dispatch({
       type: "DELETE_TODO",
@@ -350,7 +350,8 @@ class Todo extends Component {
                         </div>
                         {/* due date */}
                         {todoItem.dueDate !== "0000-00-00" &&
-                        todoItem.collapsed === false ? (
+                        todoItem.collapsed === false &&
+                        todoItem.dueDate !== "Due date (if any)" ? (
                           <div className="dateCol col-12 col-sm-4 col-md-4">
                             <div className="dateInfo">
                               <p className="text-muted m-0 p-0">Due Date</p>

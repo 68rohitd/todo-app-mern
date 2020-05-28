@@ -17,7 +17,29 @@ class AddTodo extends Component {
       dueDate: "",
       label: "Others",
       important: "false",
+
+      // user history
+      history: [],
     };
+  }
+
+  async componentDidMount() {
+    // const userId = localStorage.getItem("userId");
+    const token = localStorage.getItem("auth-token");
+
+    try {
+      let userRes = await axios.get("/users", {
+        headers: { "x-auth-token": token },
+      });
+
+      console.log("history: ", userRes.data);
+
+      if (userRes.data.history === null) userRes.data.history = [];
+
+      this.setState({ history: userRes.data.history });
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   onChangeInputFields = (index) => (e) => {
@@ -69,7 +91,7 @@ class AddTodo extends Component {
   onSubmit = async (dispatch, user, e) => {
     e.preventDefault();
 
-    let { title, dueDate, label, inputFields, important } = this.state;
+    let { title, dueDate, label, inputFields, important, history } = this.state;
     if (dueDate === "") dueDate = "0000-00-00";
     const newTodo = {
       userId: user.id,
@@ -85,6 +107,34 @@ class AddTodo extends Component {
 
     const res = await axios.post("/todos/add", newTodo);
     console.log("Added: ", res.data);
+
+    // updating to history
+    const token = localStorage.getItem("auth-token");
+
+    let updatedHistory = [...history];
+    const updatedTodo = {
+      userId: user.id,
+      title,
+      finished: false,
+      collapsed: false,
+      todoName: inputFields,
+      dueDate,
+      label,
+      status: "new",
+      important,
+      historyId: res.data._id,
+    };
+    updatedHistory.push(updatedTodo);
+
+    try {
+      await axios.put("/users/updateHistory", updatedHistory, {
+        headers: { "x-auth-token": token },
+      });
+      // console.log("result: ", res.data);
+    } catch (err) {
+      console.log("ERROR: ", err.response);
+    }
+
     dispatch({
       type: "ADD_TODO",
       payload: res.data,

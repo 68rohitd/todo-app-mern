@@ -123,6 +123,23 @@ router.get("/", auth, async (req, res) => {
   res.json({
     displayName: user.displayName,
     id: user._id,
+    history: user.history,
+  });
+});
+
+// @desc: update users history
+router.put("/updateHistory/", auth, async (req, res) => {
+  console.log(req.user);
+
+  User.findOneAndUpdate({ _id: req.user }, { history: req.body }, function (
+    err,
+    result
+  ) {
+    if (err) {
+      res.status(400).json("Error: " + err);
+    } else {
+      res.json(result);
+    }
   });
 });
 

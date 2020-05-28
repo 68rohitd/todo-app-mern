@@ -20,6 +20,8 @@ class AddTodo extends Component {
       status: "",
       finished: false,
       important: "false",
+
+      history: [],
     };
   }
 
@@ -27,9 +29,10 @@ class AddTodo extends Component {
     const { id } = this.props.match.params;
 
     let fetchedData = await axios.get(`/todos/${id}`);
-    console.log("fetched data: ", fetchedData.data);
+
     if (fetchedData.data.dueDate === "0000-00-00")
       fetchedData.data.dueDate = "Due date (if any)";
+
     setTimeout(() => {
       this.setState({
         title: fetchedData.data.title,
@@ -41,6 +44,17 @@ class AddTodo extends Component {
         important: fetchedData.data.important,
       });
     }, 300);
+
+    // getting history of user
+    const token = localStorage.getItem("auth-token");
+    const userHistory = await axios.get("/users", {
+      headers: { "x-auth-token": token },
+    });
+
+    let historyList = userHistory.data.history;
+    if (historyList === null) historyList = [];
+    this.setState({ history: historyList });
+    console.log("history: ", historyList);
   }
 
   onChangeInputFields = (index) => (e) => {
@@ -100,15 +114,22 @@ class AddTodo extends Component {
       status,
       finished,
       important,
+      history,
     } = this.state;
     const { id } = this.props.match.params;
     if (dueDate === "") dueDate = "0000-00-00";
 
     // check if added new item, if so set status to 'in Progress'
     status = "in progress";
-    if (inputFields.every((item) => item.finished === true))
+    finished = false;
+    if (inputFields.every((item) => item.finished === true)) {
       status = "completed";
-    if (inputFields.every((item) => item.finished === false)) status = "new";
+      finished = true;
+    }
+    if (inputFields.every((item) => item.finished === false)) {
+      status = "new";
+      finished = false;
+    }
 
     const updatedTodo = {
       userId: user.id,
@@ -128,6 +149,33 @@ class AddTodo extends Component {
       type: "UPDATE_TODO",
       payload: res.data,
     });
+
+    // updating user's history todo too
+    history.forEach((item) => {
+      if (item.historyId === res.data._id) {
+        item.userId = user.id;
+        item.title = title;
+        item.todoName = inputFields;
+        item.dueDate = dueDate;
+        item.label = label;
+        item.status = status;
+        item.finished = finished;
+        item.collapsed = false;
+        item.important = important;
+      }
+    });
+
+    console.log("sending to hisory: ", history);
+    const token = localStorage.getItem("auth-token");
+
+    try {
+      const histRes = await axios.put("/users/updateHistory", history, {
+        headers: { "x-auth-token": token },
+      });
+      console.log("result of history: ", histRes.data);
+    } catch (err) {
+      console.log("ERROR: ", err.response);
+    }
 
     this.props.history.push("/");
   };

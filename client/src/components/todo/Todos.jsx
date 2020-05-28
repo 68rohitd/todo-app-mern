@@ -4,6 +4,7 @@ import Todo from "./Todo";
 import AdvnacedFilter from "./AdvnacedFilter";
 import { Consumer } from "../../context";
 import "../../assets/todos-styles/todos.css";
+import SidePanel from "../layouts/SidePanel";
 
 class Todos extends Component {
   constructor() {
@@ -172,8 +173,6 @@ class Todos extends Component {
                       width: "90%",
                       order: 4,
                       marginBottom: 0,
-                      // padding: "10px 100px 0 100px",
-                      // margin: "10px 100px 0 100px",
                     }}
                   />
                 </div>
@@ -187,10 +186,23 @@ class Todos extends Component {
                   />
                 ) : (
                   <>
-                    <div className="container todoContainer">
-                      {listToDisplay.map((todoItem) => (
-                        <Todo key={todoItem._id} todoItem={todoItem} />
-                      ))}
+                    <div className="row m-0 p-0">
+                      {/* side panel */}
+                      <div
+                        className="col-12 order-2 col-sm-12 order-sm-2 col-md-2 order-md-1 col-lg-2 order-md-1"
+                        style={{ marginTop: "140px" }}
+                      >
+                        <SidePanel />
+                      </div>
+
+                      {/* todo list */}
+                      <div className="col order-1">
+                        <div className="container todoContainer">
+                          {listToDisplay.map((todoItem) => (
+                            <Todo key={todoItem._id} todoItem={todoItem} />
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   </>
                 )}

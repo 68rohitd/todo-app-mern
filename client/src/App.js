@@ -14,6 +14,7 @@ import { Provider } from "./context";
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
 
 import "./App.css";
+import History from "./components/todo/History";
 
 export default class App extends Component {
   render() {
@@ -25,6 +26,7 @@ export default class App extends Component {
             <Switch>
               <Route exact path="/" component={Todos} />
               <Route exact path="/add" component={AddTodo} />
+              <Route exact path="/history" component={History} />
               <Route exact path="/edit/:id" component={EditTodo} />
               <Route exact path="/advancedFilter" component={AdvnacedFilter} />
               <Route exact path="/about" component={About} />
