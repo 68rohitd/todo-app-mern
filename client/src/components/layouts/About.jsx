@@ -35,6 +35,10 @@ export default function About() {
                   Search todos by date, category, status, importance
                 </p>
                 <p className="mb-1 font-italic">
+                  Access History, Attach files!
+                </p>
+
+                <p className="mb-1 font-italic">
                   Login/Register feature, so you can access your todos anytime,
                   anywhere!
                 </p>

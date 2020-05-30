@@ -49,7 +49,7 @@
 }
 
 .todoContainer {
-  margin-top: 140px;
+  margin-top: 150px;
 }
 
 .advancedFilterContainer {
@@ -60,3 +60,8 @@
   position: relative;
   /* z-index: 100; */
 }
+
+/* .dummyheader {
+  background-color: red;
+  height: 150px;
+} */

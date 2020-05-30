@@ -44,3 +44,7 @@
 .delIcon {
   font-size: 22px !important;
 }
+
+.cardBodyRow {
+  justify-content: space-between;
+}

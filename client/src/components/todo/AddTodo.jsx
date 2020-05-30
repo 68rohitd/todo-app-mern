@@ -164,6 +164,7 @@ class AddTodo extends Component {
       important,
       attachmentName,
       historyId: res.data._id,
+      createdAt: res.data.createdAt,
     };
     updatedHistory.push(updatedTodo);
 
@@ -216,6 +217,7 @@ class AddTodo extends Component {
               <>
                 {/* back btn */}
                 <button
+                  style={{ position: "fixed" }}
                   onClick={() => this.props.history.push("/")}
                   className="backBtn btn btn-dark mt-3"
                 >
@@ -415,22 +417,39 @@ class AddTodo extends Component {
                                         })}
                                       ></i>
                                     </p>
+
                                     {this.state.attachFile ? (
-                                      <>
-                                        <input
-                                          type="file"
-                                          id="file"
-                                          onChange={this.onFileChange}
-                                          ref={(ref) => (this.fileInput = ref)}
-                                        />
-                                        {/* clear attachment */}
-                                        <button
-                                          className="btn btn-danger"
-                                          onClick={this.clearFile}
-                                        >
-                                          clear
-                                        </button>
-                                      </>
+                                      <div className="input-group mb-3">
+                                        <div className="custom-file">
+                                          <input
+                                            type="file"
+                                            id="file"
+                                            className="custom-file-input"
+                                            onChange={this.onFileChange}
+                                            ref={(ref) =>
+                                              (this.fileInput = ref)
+                                            }
+                                          />
+                                          <label
+                                            className="custom-file-label"
+                                            htmlFor="file"
+                                          >
+                                            {this.state.attachmentName
+                                              ? this.state.attachmentName
+                                              : "Upload file"}
+                                          </label>
+                                        </div>
+                                        <div className="input-group-append">
+                                          <span
+                                            style={{ cursor: "pointer" }}
+                                            onClick={this.clearFile}
+                                            className="input-group-text"
+                                            id="file"
+                                          >
+                                            Clear
+                                          </span>
+                                        </div>
+                                      </div>
                                     ) : null}
                                   </div>
                                 </div>

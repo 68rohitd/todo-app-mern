@@ -216,7 +216,7 @@ class Todo extends Component {
                     <div className="card-header pt-2 pb-2">
                       <div className="row">
                         {/* collapse icon */}
-                        <div className="col-1">
+                        <div className="col-1 order-1 col-sm-3 order-sm-1 col-md-1 order-md-1 col-lg-1 order-lg-1">
                           <i
                             className={classNames("myIcon collapseIcon fa", {
                               "fa-angle-down": todoItem.collapsed,
@@ -227,14 +227,14 @@ class Todo extends Component {
                         </div>
 
                         {/* date info */}
-                        <div className="col">
+                        <div className="col-12 order-10 col-sm-12 order-sm-10 col-md-5 order-md-1 col-lg-5 order-lg-1">
                           <small className="text-muted">
                             {this.onGetTime(todoItem.createdAt)}
                           </small>
                         </div>
 
                         {/* todo status */}
-                        <div className="col-2">
+                        <div className="col-5 order-3 col-sm-5 order-sm-3 col-md-2 order-md-3 col-lg-2 order-lg-3">
                           <span
                             style={{ float: "right" }}
                             className="badge badge-success"
@@ -244,7 +244,7 @@ class Todo extends Component {
                         </div>
 
                         {/* speech syn */}
-                        <div className="col-1">
+                        <div className="col-1 order-4 col-sm-1 order-sm-4 col-md-1 order-md-4 col-lg-1 order-lg-4">
                           <i
                             data-tip="speak out loud"
                             className={classNames("myIcon fa", {
@@ -256,7 +256,7 @@ class Todo extends Component {
                         </div>
 
                         {/* mark as complete icon */}
-                        <div className="col-1">
+                        <div className="col-1 order-5 col-sm-1 order-sm-5 col-md-1 order-md-5 col-lg-1 order-lg-5">
                           <ReactTooltip place="bottom" delayShow={1000} />
 
                           <i
@@ -272,7 +272,7 @@ class Todo extends Component {
                         </div>
 
                         {/* edit icon */}
-                        <div className="col-1">
+                        <div className="col-1 order-6 col-sm-1 order-sm-6 col-md-1 order-md-6 col-lg-1 order-lg-6">
                           <Link to={`/edit/${todoItem._id}`}>
                             <i
                               data-tip="edit task"
@@ -282,7 +282,7 @@ class Todo extends Component {
                         </div>
 
                         {/* delete icon */}
-                        <div className="col-1">
+                        <div className="col-1 order-7 col-sm-1 order-sm-7 col-md-1 order-md-7 col-lg-1 order-lg-7">
                           <i
                             className="myIcon delIcon fa fa-times text-danger"
                             onClick={this.onDelete.bind(
@@ -299,7 +299,7 @@ class Todo extends Component {
                       className="card-body pb-0 pt-1 mb-0 mt-1"
                       style={styles.card}
                     >
-                      <div className="row">
+                      <div className="row cardBodyRow">
                         <div className="taskCol col-12 col-sm-8 col-md-8">
                           {/* todo title */}
                           <p className="font-weight-bold mb-2 p-0">
@@ -364,12 +364,13 @@ class Todo extends Component {
                               })}
                         </div>
 
-                        <div className="rightside col-12 col-sm-3 col-md-3 col-lg-3">
+                        <div className="rightside col-12 col-sm-4 col-md-4 col-lg-4">
                           {/* attachments */}
                           <div className="attachmentDiv">
                             {todoItem.attachmentName ? (
                               <>
-                                <b>Attachment</b> <br />
+                                <b> Attachment</b>
+                                <br />
                                 <span
                                   style={{ cursor: "pointer" }}
                                   onClick={() =>
@@ -378,7 +379,10 @@ class Todo extends Component {
                                     )
                                   }
                                 >
-                                  {todoItem.attachmentName.slice(13)}
+                                  <i className="fa fa-paperclip">
+                                    {" "}
+                                    {todoItem.attachmentName.slice(13)}
+                                  </i>
                                 </span>
                               </>
                             ) : null}

@@ -4,6 +4,7 @@
   left: 40%;
   height: 70%;
   width: 70%;
+  z-index: -100;
 
   /* animation */
   animation-name: hoverEffect;

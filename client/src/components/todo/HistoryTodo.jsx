@@ -13,6 +13,11 @@ class Todo extends Component {
     };
   }
 
+  onGetTime = (info) => {
+    const date = new Date(info);
+    return date.toDateString() + ", " + date.toLocaleTimeString();
+  };
+
   render() {
     const { todoItem } = this.props;
 
@@ -55,6 +60,13 @@ class Todo extends Component {
                         })
                       }
                     ></i>
+                  </div>
+
+                  {/* date info */}
+                  <div className="col-12 order-10 col-sm-12 order-sm-10 col-md-5 order-md-1 col-lg-5 order-lg-1">
+                    <small className="text-muted">
+                      {this.onGetTime(todoItem.createdAt)}
+                    </small>
                   </div>
                 </div>
               </div>

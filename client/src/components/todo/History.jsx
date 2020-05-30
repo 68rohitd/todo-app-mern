@@ -27,6 +27,7 @@ export default class History extends Component {
       <>
         {/* back btn */}
         <button
+          style={{ position: "fixed" }}
           onClick={() => this.props.history.push("/")}
           className="backBtn btn btn-dark mt-3"
         >
