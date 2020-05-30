@@ -10,12 +10,24 @@
   box-shadow: 0px 0px 20px rgb(119, 119, 119) !important;
 }
 
-.dateCol {
-  flex-direction: column !important;
-  align-self: flex-end !important;
+.rightside {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
-.dateCol .dateInfo {
-  float: right;
+
+.rightside .attachmentDiv {
+  /* background-color: rebeccapurple; */
+  display: flex;
+  flex-direction: column;
+  /* margin-left: 30%; */
+}
+
+.rightside .dateDiv {
+  /* background-color: rebeccapurple; */
+  display: flex;
+  flex-direction: column;
+  /* margin-left: 30%; */
 }
 
 .myIcon {

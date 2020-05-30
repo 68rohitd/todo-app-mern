@@ -25,9 +25,18 @@ export default class History extends Component {
   render() {
     return (
       <>
-        <h1 className="display-2 text-center">History</h1>
+        {/* back btn */}
+        <button
+          onClick={() => this.props.history.push("/")}
+          className="backBtn btn btn-dark mt-3"
+        >
+          <i style={{ fontSize: 25 }} className="fa fa-arrow-circle-left"></i>
+        </button>
+
+        {/* history list */}
+        <h1 className="display-3 text-center mt-5 pt-4">History</h1>
         <div className="container mt-5">
-          {this.state.history.map((todoItem, index) => (
+          {this.state.history.map((todoItem) => (
             <HistoryTodo key={todoItem.historyId} todoItem={todoItem} />
           ))}
         </div>

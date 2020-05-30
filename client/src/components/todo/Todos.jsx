@@ -103,7 +103,7 @@ class Todos extends Component {
 
                   {/* badge stack */}
                   <div className="col-12 order-1 col-sm-12 order-sm-1 col-md-8 order-md-1 badgeCol">
-                    <div className="badgeContainer mt-2">
+                    <div className="badgeContainer mt-3">
                       <button
                         type="button"
                         className="btn btn-success mt-1 mb-1 mr-1 p-1 font-weight-bold"
@@ -185,12 +185,15 @@ class Todos extends Component {
                     currList={this.state.currList}
                   />
                 ) : (
-                  <>
+                  <div className="container">
                     <div className="row m-0 p-0">
                       {/* side panel */}
                       <div
                         className="col-12 order-2 col-sm-12 order-sm-2 col-md-2 order-md-1 col-lg-2 order-md-1"
-                        style={{ marginTop: "140px" }}
+                        style={{
+                          marginTop: "140px",
+                          paddingLeft: 0,
+                        }}
                       >
                         <SidePanel />
                       </div>
@@ -204,7 +207,7 @@ class Todos extends Component {
                         </div>
                       </div>
                     </div>
-                  </>
+                  </div>
                 )}
               </React.Fragment>
             );

@@ -163,6 +163,21 @@ class Todo extends Component {
       this.dueAlert = true;
   };
 
+  downloadAttachment = async (attachmentName) => {
+    axios({
+      url: `/todos/download/${attachmentName}`,
+      method: "POST",
+      responseType: "blob", // important
+    }).then((response) => {
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", attachmentName);
+      document.body.appendChild(link);
+      link.click();
+    });
+  };
+
   render() {
     const { todoItem } = this.props;
 
@@ -348,13 +363,35 @@ class Todo extends Component {
                                 );
                               })}
                         </div>
-                        {/* due date */}
-                        {todoItem.dueDate !== "0000-00-00" &&
-                        todoItem.collapsed === false &&
-                        todoItem.dueDate !== "Due date (if any)" ? (
-                          <div className="dateCol col-12 col-sm-4 col-md-4">
-                            <div className="dateInfo">
-                              <p className="text-muted m-0 p-0">Due Date</p>
+
+                        <div className="rightside col-12 col-sm-3 col-md-3 col-lg-3">
+                          {/* attachments */}
+                          <div className="attachmentDiv">
+                            {todoItem.attachmentName ? (
+                              <>
+                                <b>Attachment</b> <br />
+                                <span
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() =>
+                                    this.downloadAttachment(
+                                      todoItem.attachmentName
+                                    )
+                                  }
+                                >
+                                  {todoItem.attachmentName.slice(13)}
+                                </span>
+                              </>
+                            ) : null}
+                          </div>
+
+                          {/* due date */}
+                          {todoItem.dueDate !== "0000-00-00" &&
+                          todoItem.collapsed === false &&
+                          todoItem.dueDate !== "Due date (if any)" ? (
+                            <div className="dateDiv">
+                              <p className="font-weight-bold m-0 p-0">
+                                Due Date
+                              </p>
                               <p
                                 className={classNames({
                                   "text-danger font-weight-bold": this.dueAlert,
@@ -363,8 +400,8 @@ class Todo extends Component {
                                 {todoItem.dueDate}
                               </p>
                             </div>
-                          </div>
-                        ) : null}
+                          ) : null}
+                        </div>
                       </div>
                     </div>
                   </div>

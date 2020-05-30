@@ -1,5 +1,44 @@
 const router = require("express").Router();
+const express = require("express");
 let Todos = require("../models/todos.model");
+const multer = require("multer");
+const path = require("path");
+
+// @desc: file upload
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + file.originalname);
+  },
+});
+var upload = multer({
+  storage: storage,
+});
+
+router.post("/uploadfile", upload.single("file"), (req, res, next) => {
+  const file = req.file;
+  if (!file) {
+    const error = new Error("Please uplad a file");
+    error.httpStatusCode = 400;
+    return next();
+  }
+  console.log(file);
+  res.send(file);
+});
+
+// @desc: file download (attachment)
+router.post("/download/:attachmentName", function (req, res, next) {
+  const attachmentName = req.params.attachmentName;
+  console.log(attachmentName);
+
+  var filePath = `public/${attachmentName}`; // Or format the path using the `id` rest param
+  var fileName = `attachmentName`; // The default name the browser will use
+
+  res.download(filePath, fileName);
+  // return next();
+});
 
 // @desc: fetch todos of logged in user
 router.route("/user/:id").get((req, res) => {
@@ -49,6 +88,7 @@ router.route("/add").post((req, res) => {
   const finished = req.body.finished;
   const important = req.body.important;
   const collapsed = req.body.collapsed;
+  const attachmentName = req.body.attachmentName;
 
   const newTodo = new Todos({
     userId,
@@ -60,6 +100,7 @@ router.route("/add").post((req, res) => {
     finished,
     important,
     collapsed,
+    attachmentName,
   });
 
   newTodo
@@ -95,6 +136,7 @@ router.route("/update/:id").post((req, res) => {
       todo.finished = req.body.finished;
       todo.important = req.body.important;
       todo.collapsed = req.body.collapsed;
+      todo.attachmentName = req.body.attachmentName;
 
       todo
         .save()

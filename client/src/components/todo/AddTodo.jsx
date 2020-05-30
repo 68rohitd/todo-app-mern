@@ -20,6 +20,11 @@ class AddTodo extends Component {
 
       // user history
       history: [],
+
+      // attachment
+      attachFile: false,
+      attachmentName: "",
+      file: "",
     };
   }
 
@@ -31,8 +36,6 @@ class AddTodo extends Component {
       let userRes = await axios.get("/users", {
         headers: { "x-auth-token": token },
       });
-
-      console.log("history: ", userRes.data);
 
       if (userRes.data.history === null) userRes.data.history = [];
 
@@ -91,8 +94,44 @@ class AddTodo extends Component {
   onSubmit = async (dispatch, user, e) => {
     e.preventDefault();
 
-    let { title, dueDate, label, inputFields, important, history } = this.state;
-    if (dueDate === "") dueDate = "0000-00-00";
+    // upload file if selected
+    if (this.state.file) {
+      const data = new FormData();
+      data.append("file", this.state.file);
+
+      const config = {
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      };
+
+      try {
+        const fileUploadRes = await axios.post(
+          "/todos/uploadfile",
+          data,
+          config
+        );
+        console.log(fileUploadRes.data.filename);
+        this.setState({ attachmentName: fileUploadRes.data.filename });
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+    let {
+      title,
+      dueDate,
+      label,
+      inputFields,
+      important,
+      history,
+      attachmentName,
+    } = this.state;
+
+    if (dueDate === "" || dueDate === "Due date (if any)")
+      dueDate = "0000-00-00";
+
+    // adding new todo to db
     const newTodo = {
       userId: user.id,
       title,
@@ -103,6 +142,7 @@ class AddTodo extends Component {
       label,
       status: "new",
       important,
+      attachmentName,
     };
 
     const res = await axios.post("/todos/add", newTodo);
@@ -122,6 +162,7 @@ class AddTodo extends Component {
       label,
       status: "new",
       important,
+      attachmentName,
       historyId: res.data._id,
     };
     updatedHistory.push(updatedTodo);
@@ -130,7 +171,6 @@ class AddTodo extends Component {
       await axios.put("/users/updateHistory", updatedHistory, {
         headers: { "x-auth-token": token },
       });
-      // console.log("result: ", res.data);
     } catch (err) {
       console.log("ERROR: ", err.response);
     }
@@ -150,6 +190,20 @@ class AddTodo extends Component {
     e.currentTarget.type = "text";
   };
 
+  onFileChange = (e) => {
+    console.log(e.target.files[0]);
+    this.setState({
+      file: e.target.files[0],
+      attachmentName: e.target.files[0].name,
+    });
+  };
+
+  clearFile = (e) => {
+    e.preventDefault();
+    this.fileInput.value = "";
+    this.setState({ file: "", attachmentName: "" });
+  };
+
   render() {
     return (
       <Consumer>
@@ -160,6 +214,7 @@ class AddTodo extends Component {
           if (token) {
             return (
               <>
+                {/* back btn */}
                 <button
                   onClick={() => this.props.history.push("/")}
                   className="backBtn btn btn-dark mt-3"
@@ -169,7 +224,9 @@ class AddTodo extends Component {
                     className="fa fa-arrow-circle-left"
                   ></i>
                 </button>
-                <div className="container mt-5">
+
+                {/* form */}
+                <div className="container mt-5 pt-4">
                   <div
                     className="row m-0"
                     style={{ flexDirection: "column", alignContent: "center" }}
@@ -335,6 +392,50 @@ class AddTodo extends Component {
                                   </button>
                                 </div>
                               </div>
+
+                              {/* attachment */}
+                              <div className="form-group">
+                                <div className="row">
+                                  <div className="col">
+                                    <p
+                                      className="text-secondary"
+                                      style={{ cursor: "pointer" }}
+                                      onClick={() =>
+                                        this.setState({
+                                          attachFile: !this.state.attachFile,
+                                        })
+                                      }
+                                    >
+                                      Attachment (if any){" "}
+                                      <i
+                                        className={classNames("fa", {
+                                          "fa-caret-down": !this.state
+                                            .attachFile,
+                                          "fa-caret-up": this.state.attachFile,
+                                        })}
+                                      ></i>
+                                    </p>
+                                    {this.state.attachFile ? (
+                                      <>
+                                        <input
+                                          type="file"
+                                          id="file"
+                                          onChange={this.onFileChange}
+                                          ref={(ref) => (this.fileInput = ref)}
+                                        />
+                                        {/* clear attachment */}
+                                        <button
+                                          className="btn btn-danger"
+                                          onClick={this.clearFile}
+                                        >
+                                          clear
+                                        </button>
+                                      </>
+                                    ) : null}
+                                  </div>
+                                </div>
+                              </div>
+
                               <br />
                               <div className="row">
                                 <div className="col">
