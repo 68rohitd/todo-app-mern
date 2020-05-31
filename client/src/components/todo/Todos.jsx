@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link, Redirect } from "react-router-dom";
+import classNames from "classnames";
 import Todo from "./Todo";
 import AdvnacedFilter from "./AdvnacedFilter";
 import { Consumer } from "../../context";
@@ -76,7 +77,7 @@ class Todos extends Component {
           } else {
             listToDisplay = todos.filter((todo) => todo.label === "Others");
           }
-
+          console.log(listToDisplay);
           if (token) {
             return (
               <React.Fragment>
@@ -106,7 +107,12 @@ class Todos extends Component {
                     <div className="badgeContainer mt-3">
                       <button
                         type="button"
-                        className="btn btn-success mt-1 mb-1 mr-1 p-1 font-weight-bold"
+                        className={classNames(
+                          "btn btn-success mt-1 mb-1 mr-1 p-1 font-weight-bold",
+                          {
+                            activeLabel: this.state.currList === "All",
+                          }
+                        )}
                         onClick={() => this.setState({ currList: "All" })}
                       >
                         All{" "}
@@ -117,9 +123,15 @@ class Todos extends Component {
                             otherCount}
                         </span>
                       </button>
+
                       <button
                         type="button"
-                        className="btn btn-primary m-1 p-1 font-weight-bold"
+                        className={classNames(
+                          "btn btn-primary m-1 p-1 font-weight-bold",
+                          {
+                            activeLabel: this.state.currList === "Personal",
+                          }
+                        )}
                         onClick={() => this.setState({ currList: "Personal" })}
                       >
                         Personal{" "}
@@ -127,9 +139,15 @@ class Todos extends Component {
                           {personalCount}
                         </span>
                       </button>
+
                       <button
                         type="button"
-                        className="btn btn-danger m-1 p-1 font-weight-bold"
+                        className={classNames(
+                          "btn btn-danger m-1 p-1 font-weight-bold",
+                          {
+                            activeLabel: this.state.currList === "Shopping",
+                          }
+                        )}
                         onClick={() => this.setState({ currList: "Shopping" })}
                       >
                         Shopping{" "}
@@ -137,17 +155,29 @@ class Todos extends Component {
                           {shoppingCount}
                         </span>
                       </button>
+
                       <button
                         type="button"
-                        className="btn btn-dark m-1 p-1 font-weight-bold"
+                        className={classNames(
+                          "btn btn-dark m-1 p-1 font-weight-bold",
+                          {
+                            activeLabel: this.state.currList === "Work",
+                          }
+                        )}
                         onClick={() => this.setState({ currList: "Work" })}
                       >
                         Work{" "}
                         <span className="badge badge-light">{workCount}</span>
                       </button>
+
                       <button
                         type="button"
-                        className="btn btn-warning mt-1 mb-1 ml-1 p-1 font-weight-bold text-light"
+                        className={classNames(
+                          "btn btn-warning mt-1 mb-1 ml-1 p-1 font-weight-bold text-light",
+                          {
+                            activeLabel: this.state.currList === "Others",
+                          }
+                        )}
                         onClick={() => this.setState({ currList: "Others" })}
                       >
                         Others{" "}
@@ -200,11 +230,19 @@ class Todos extends Component {
 
                       {/* todo list */}
                       <div className="col order-1">
-                        <div className="container todoContainer">
-                          {listToDisplay.map((todoItem) => (
-                            <Todo key={todoItem._id} todoItem={todoItem} />
-                          ))}
-                        </div>
+                        {listToDisplay.length > 0 ? (
+                          <div className="container todoContainer">
+                            {listToDisplay.map((todoItem) => (
+                              <Todo key={todoItem._id} todoItem={todoItem} />
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="container caughtUpContainer">
+                            <h3 className="text-secondary">
+                              You're all caught up! 😇
+                            </h3>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>

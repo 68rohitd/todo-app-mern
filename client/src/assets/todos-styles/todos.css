@@ -61,7 +61,33 @@
   /* z-index: 100; */
 }
 
-/* .dummyheader {
-  background-color: red;
-  height: 150px;
-} */
+.activeLabel {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 7px;
+}
+
+.caughtUpContainer {
+  display: flex;
+  height: 300px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 140px;
+
+  /* animation */
+  animation-name: caughtUp;
+  animation-duration: 1.4s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes caughtUp {
+  0% {
+    margin-top: 140px;
+  }
+  50% {
+    margin-top: 145px;
+  }
+  100% {
+    margin-top: 140px;
+  }
+}

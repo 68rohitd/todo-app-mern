@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 export default class SidePanel extends Component {
   render() {
     return (
-      <div>
+      <div className="container">
         <ul style={{ padding: 0 }}>
           <Link to="/history">
             <li style={{ cursor: "pointer" }}>History</li>

@@ -10,41 +10,19 @@
   box-shadow: 0px 0px 20px rgb(119, 119, 119) !important;
 }
 
-.rightside {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.rightside .attachmentDiv {
-  /* background-color: rebeccapurple; */
-  display: flex;
-  flex-direction: column;
-  /* margin-left: 30%; */
-}
-
-.rightside .dateDiv {
-  /* background-color: rebeccapurple; */
-  display: flex;
-  flex-direction: column;
-  /* margin-left: 30%; */
-}
-
 .myIcon {
-  font-size: 20px !important;
+  font-size: 22px !important;
   cursor: pointer !important;
   font-weight: bold !important;
   float: right !important;
+  color: #37454d;
 }
 
 .collapseIcon {
   float: left !important;
 }
 
-.delIcon {
-  font-size: 22px !important;
-}
-
+/* 
 .cardBodyRow {
   justify-content: space-between;
-}
+} */

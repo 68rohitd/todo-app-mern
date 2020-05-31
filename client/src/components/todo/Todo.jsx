@@ -178,6 +178,16 @@ class Todo extends Component {
     });
   };
 
+  onGetProgress = (todoItem) => {
+    const len = todoItem.todoName.length;
+    let remaining = 0;
+    todoItem.todoName.forEach((item) => {
+      if (item.finished === false) remaining++;
+    });
+    const progress = ((len - remaining) / len) * 100;
+    return progress.toFixed(0);
+  };
+
   render() {
     const { todoItem } = this.props;
 
@@ -219,8 +229,8 @@ class Todo extends Component {
                         <div className="col-1 order-1 col-sm-3 order-sm-1 col-md-1 order-md-1 col-lg-1 order-lg-1">
                           <i
                             className={classNames("myIcon collapseIcon fa", {
-                              "fa-angle-down": todoItem.collapsed,
-                              "fa-angle-up": !todoItem.collapsed,
+                              "fa-chevron-circle-down": todoItem.collapsed,
+                              "fa-chevron-circle-up": !todoItem.collapsed,
                             })}
                             onClick={() => this.onCollapsed(todoItem, dispatch)}
                           ></i>
@@ -239,7 +249,7 @@ class Todo extends Component {
                             style={{ float: "right" }}
                             className="badge badge-success"
                           >
-                            {todoItem.status}
+                            <p className="mb-1">{todoItem.status}</p>
                           </span>
                         </div>
 
@@ -248,8 +258,8 @@ class Todo extends Component {
                           <i
                             data-tip="speak out loud"
                             className={classNames("myIcon fa", {
-                              "fa-play": this.state.playing === false,
-                              "fa-stop": this.state.playing === true,
+                              "fa-play-circle": this.state.playing === false,
+                              "fa-stop-circle": this.state.playing === true,
                             })}
                             onClick={() => this.onSpeak(todoItem)}
                           ></i>
@@ -261,7 +271,7 @@ class Todo extends Component {
 
                           <i
                             data-tip="mark all tasks as completed"
-                            className={classNames("myIcon fa fa-check", {
+                            className={classNames("myIcon fa fa-check-circle", {
                               "text-success": todoItem.finished,
                               "text-dark": !todoItem.finished,
                             })}
@@ -276,7 +286,7 @@ class Todo extends Component {
                           <Link to={`/edit/${todoItem._id}`}>
                             <i
                               data-tip="edit task"
-                              className={"myIcon fa fa-pencil text-dark"}
+                              className={"myIcon fa fa-edit text-dark"}
                             ></i>
                           </Link>
                         </div>
@@ -284,7 +294,7 @@ class Todo extends Component {
                         {/* delete icon */}
                         <div className="col-1 order-7 col-sm-1 order-sm-7 col-md-1 order-md-7 col-lg-1 order-lg-7">
                           <i
-                            className="myIcon delIcon fa fa-times text-danger"
+                            className="myIcon fa fa-times-circle text-danger"
                             onClick={this.onDelete.bind(
                               this,
                               todoItem._id,
@@ -300,18 +310,46 @@ class Todo extends Component {
                       style={styles.card}
                     >
                       <div className="row cardBodyRow">
-                        <div className="taskCol col-12 col-sm-8 col-md-8">
-                          {/* todo title */}
-                          <p className="font-weight-bold mb-2 p-0">
-                            {todoItem.title[0].toUpperCase() +
-                              todoItem.title.slice(1)}
-                            {/* imp mark */}
-                            {todoItem.important === "true" ? (
-                              <span className="badge badge-danger ml-1">
-                                Imp
-                              </span>
-                            ) : null}
-                          </p>
+                        <div className="taskCol col-12">
+                          <div className="row">
+                            <div className="col-12 col-sm-12 col-md-9 col-lg-9 pr-0">
+                              {/* todo title */}
+                              <p
+                                className="font-weight-bold my-auto pb-2"
+                                style={{ fontSize: "16px" }}
+                              >
+                                {todoItem.title[0].toUpperCase() +
+                                  todoItem.title.slice(1)}
+                                {/* imp mark */}
+                                {todoItem.important === "true" ? (
+                                  <span
+                                    className="badge badge-danger ml-1 my-auto"
+                                    style={{ fontSize: "13px" }}
+                                  >
+                                    Imp
+                                  </span>
+                                ) : null}
+                              </p>
+                            </div>
+                            {/* progress bar */}
+                            <div className="col-3  my-auto">
+                              <div
+                                className="progress"
+                                style={{ height: "7px", width: "100px" }}
+                              >
+                                <div
+                                  className="progress-bar bg-primary"
+                                  role="progressbar"
+                                  style={{
+                                    width: `${this.onGetProgress(todoItem)}%`,
+                                  }}
+                                  aria-valuenow="25"
+                                  aria-valuemin="0"
+                                  aria-valuemax="100"
+                                ></div>
+                              </div>
+                            </div>
+                          </div>
 
                           {/* task name */}
                           {todoItem.collapsed
@@ -321,7 +359,7 @@ class Todo extends Component {
                                   <div className="row" key={index}>
                                     <div className="col m-0">
                                       <div className="row">
-                                        <div className="col-1">
+                                        <div className="col-1 ">
                                           <div className="pretty p-icon p-round p-jelly">
                                             <input
                                               type="checkbox"
@@ -343,7 +381,7 @@ class Todo extends Component {
                                             </div>
                                           </div>
                                         </div>
-                                        <div className="col">
+                                        <div className="col ">
                                           <label
                                             style={
                                               item.finished
@@ -363,49 +401,51 @@ class Todo extends Component {
                                 );
                               })}
                         </div>
+                      </div>
 
-                        <div className="rightside col-12 col-sm-4 col-md-4 col-lg-4">
-                          {/* attachments */}
-                          <div className="attachmentDiv">
-                            {todoItem.attachmentName ? (
-                              <>
-                                <b> Attachment</b>
-                                <br />
-                                <span
-                                  style={{ cursor: "pointer" }}
-                                  onClick={() =>
-                                    this.downloadAttachment(
-                                      todoItem.attachmentName
-                                    )
-                                  }
-                                >
-                                  <i className="fa fa-paperclip">
-                                    {" "}
-                                    {todoItem.attachmentName.slice(13)}
-                                  </i>
-                                </span>
-                              </>
-                            ) : null}
+                      {/* divider */}
+                      {(todoItem.dueDate !== "0000-00-00" ||
+                        todoItem.attachmentName) &&
+                      todoItem.collapsed === false ? (
+                        <hr style={{ margin: "10px 0 10px 0" }} />
+                      ) : null}
+
+                      <div
+                        className="row mx-1"
+                        style={{ justifyContent: "space-between" }}
+                      >
+                        {/* attachments */}
+                        {todoItem.attachmentName &&
+                        todoItem.collapsed === false ? (
+                          <span
+                            style={{ cursor: "pointer" }}
+                            onClick={() =>
+                              this.downloadAttachment(todoItem.attachmentName)
+                            }
+                          >
+                            <i
+                              className="fa fa-paperclip mb-2"
+                              style={{ fontSize: "22px" }}
+                            ></i>{" "}
+                            {todoItem.attachmentName.slice(13)}
+                          </span>
+                        ) : null}
+
+                        {/* due date */}
+                        {todoItem.dueDate !== "0000-00-00" &&
+                        todoItem.collapsed === false &&
+                        todoItem.dueDate !== "Due date (if any)" ? (
+                          <div className="dateDiv">
+                            <p className="font-weight-bold m-0 p-0">Due Date</p>
+                            <p
+                              className={classNames({
+                                "text-danger font-weight-bold": this.dueAlert,
+                              })}
+                            >
+                              {todoItem.dueDate}
+                            </p>
                           </div>
-
-                          {/* due date */}
-                          {todoItem.dueDate !== "0000-00-00" &&
-                          todoItem.collapsed === false &&
-                          todoItem.dueDate !== "Due date (if any)" ? (
-                            <div className="dateDiv">
-                              <p className="font-weight-bold m-0 p-0">
-                                Due Date
-                              </p>
-                              <p
-                                className={classNames({
-                                  "text-danger font-weight-bold": this.dueAlert,
-                                })}
-                              >
-                                {todoItem.dueDate}
-                              </p>
-                            </div>
-                          ) : null}
-                        </div>
+                        ) : null}
                       </div>
                     </div>
                   </div>

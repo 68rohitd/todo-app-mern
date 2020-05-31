@@ -29,13 +29,13 @@ export default function About() {
                 <p className="mb-1 font-italic">One click Filter todos</p>
                 <p className="mb-1 font-italic">Speak out loud feature</p>
                 <p className="mb-1 font-italic">
+                  Access History, Attach files!
+                </p>
+                <p className="mb-1 font-italic">
                   Responsive Design. Sign in once, use on any device
                 </p>
                 <p className="mb-1 font-italic">
                   Search todos by date, category, status, importance
-                </p>
-                <p className="mb-1 font-italic">
-                  Access History, Attach files!
                 </p>
 
                 <p className="mb-1 font-italic">

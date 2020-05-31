@@ -8,7 +8,6 @@ class Todo extends Component {
     super();
 
     this.state = {
-      playing: false,
       collapsed: true,
     };
   }
@@ -51,8 +50,8 @@ class Todo extends Component {
                   <div className="col-1">
                     <i
                       className={classNames("myIcon collapseIcon fa", {
-                        "fa-angle-down": this.state.collapsed,
-                        "fa-angle-up": !this.state.collapsed,
+                        "fa-chevron-circle-down": this.state.collapsed,
+                        "fa-chevron-circle-up": !this.state.collapsed,
                       })}
                       onClick={() =>
                         this.setState({
