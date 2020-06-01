@@ -4,6 +4,7 @@ import axios from "axios";
 import HistoryTodo from "./HistoryTodo";
 import SidePanel from "../layouts/SidePanel";
 import { Redirect } from "react-router-dom";
+import { Spring } from "react-spring/renderprops";
 
 export default class History extends Component {
   constructor() {
@@ -25,7 +26,7 @@ export default class History extends Component {
     });
   }
 
-  onClearHistory = async () => {
+  onClearHistory = async (user, dispatch) => {
     const token = localStorage.getItem("auth-token");
 
     const clearedHistory = [];
@@ -37,13 +38,22 @@ export default class History extends Component {
       console.log("ERROR: ", err.response);
     }
     this.setState({ history: [] });
+
+    // clearing user's history
+    let updatedUser = user;
+    updatedUser.history = [];
+
+    dispatch({
+      type: "UPDATE_TODO",
+      payload: updatedUser,
+    });
   };
 
   render() {
     return (
       <Consumer>
         {(value) => {
-          const { todos, user } = value;
+          const { todos, user, dispatch } = value;
 
           // getting token from localstorage to avoid flicker
           let token = localStorage.getItem("auth-token");
@@ -63,26 +73,39 @@ export default class History extends Component {
                   ></i>
                 </button>
 
-                {/* heading */}
-                <div className="container mt-2">
-                  <div className="row mx-0">
-                    <div className="col">
-                      <h1 className="display-4 text-right text-dark font-weight-bold">
-                        History
-                      </h1>
-                    </div>
+                <Spring
+                  from={{ opacity: 0 }}
+                  to={{ opacity: 1 }}
+                  config={{ duration: 200 }}
+                >
+                  {(props) => (
+                    <div style={props}>
+                      {/* heading */}
+                      <div className="container mt-2">
+                        <div className="row mx-0">
+                          <div className="col">
+                            <h1 className="display-4 text-right text-dark font-weight-bold">
+                              History
+                            </h1>
+                          </div>
 
-                    <div className="col-3 my-auto">
-                      <button
-                        style={{ float: "right" }}
-                        className="btn btn-danger"
-                        onClick={() => this.onClearHistory()}
-                      >
-                        Clear History
-                      </button>
+                          {/* clear history btn */}
+                          <div className="col-3 my-auto">
+                            <button
+                              style={{ float: "right" }}
+                              className="btn btn-danger"
+                              onClick={() =>
+                                this.onClearHistory(user, dispatch)
+                              }
+                            >
+                              Clear History
+                            </button>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
+                  )}
+                </Spring>
 
                 <div className="container">
                   <div className="row">
@@ -93,9 +116,15 @@ export default class History extends Component {
 
                     {/* history list */}
                     <div className="col order-1 todoContainer">
-                      {this.state.history.map((todoItem) => (
-                        <HistoryTodo key={todoItem._id} todoItem={todoItem} />
-                      ))}
+                      {this.state.history.length > 0 ? (
+                        this.state.history.map((todoItem) => (
+                          <HistoryTodo key={todoItem._id} todoItem={todoItem} />
+                        ))
+                      ) : (
+                        <h3 className="emptyResult text-secondary">
+                          No result to display!
+                        </h3>
+                      )}
                     </div>
                   </div>
                 </div>

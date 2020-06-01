@@ -149,7 +149,9 @@ class AddTodo extends Component {
       history,
       attachmentName,
     } = this.state;
+
     const { id } = this.props.match.params;
+
     if (dueDate === "" || dueDate === "Due date (if any)")
       dueDate = "0000-00-00";
 
@@ -186,7 +188,7 @@ class AddTodo extends Component {
     const token = localStorage.getItem("auth-token");
 
     history.forEach((item) => {
-      if (item.historyId === res.data._id) {
+      if (item._id === res.data._id) {
         item.userId = user.id;
         item.title = title;
         item.todoName = inputFields;

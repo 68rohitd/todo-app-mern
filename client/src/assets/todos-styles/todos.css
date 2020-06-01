@@ -58,7 +58,6 @@
 .caughtUpContainer {
   display: flex;
   height: 300px;
-  align-items: center;
   justify-content: center;
   margin-top: 140px;
 
@@ -66,6 +65,18 @@
   animation-name: caughtUp;
   animation-duration: 1.4s;
   animation-iteration-count: infinite;
+}
+
+.emptyResult {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  /* margin-top: 140px; */
+}
+
+.emptySearchResult {
+  display: flex;
+  justify-content: center;
 }
 
 @keyframes caughtUp {

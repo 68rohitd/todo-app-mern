@@ -272,15 +272,13 @@ class AdvnacedFilter extends Component {
             <div className="col-12 col-sm-12 col-md-8">
               {/* display results */}
               {listToDisplay.length > 0 ? (
-                <>
-                  {listToDisplay.map((todoItem) => (
-                    <Todo key={todoItem._id} todoItem={todoItem} />
-                  ))}
-                </>
+                listToDisplay.map((todoItem) => (
+                  <Todo key={todoItem._id} todoItem={todoItem} />
+                ))
               ) : (
-                <div className="d-flex justify-content-center">
-                  <span className="text-muted">No result to display</span>
-                </div>
+                <h3 className="emptySearchResult text-secondary">
+                  No result to display!
+                </h3>
               )}
             </div>
           </div>

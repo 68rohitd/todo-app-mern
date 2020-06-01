@@ -11,7 +11,7 @@ export default class History extends Component {
       <Consumer>
         {(value) => {
           const { todos, user } = value;
-          let completedTodos = todos.filter((todoItem) => todoItem.finished);
+          let incompletedTodos = todos.filter((todoItem) => !todoItem.finished);
 
           // getting token from localstorage to avoid flicker
           let token = localStorage.getItem("auth-token");
@@ -43,7 +43,7 @@ export default class History extends Component {
                         <div className="row mx-0">
                           <div className="col">
                             <h3 className="display-4 text-right text-dark font-weight-bold">
-                              Completed Tasks
+                              Incomplete Tasks
                             </h3>
                           </div>
                         </div>
@@ -59,10 +59,10 @@ export default class History extends Component {
                       <SidePanel todos={todos} user={user} />
                     </div>
 
-                    {/* Completed list */}
+                    {/* Incompleted list */}
                     <div className="col order-1 todoContainer">
-                      {completedTodos.length > 0 ? (
-                        completedTodos.map((todoItem) => (
+                      {incompletedTodos.length > 0 ? (
+                        incompletedTodos.map((todoItem) => (
                           <Todo key={todoItem._id} todoItem={todoItem} />
                         ))
                       ) : (

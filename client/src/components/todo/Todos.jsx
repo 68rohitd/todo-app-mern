@@ -216,7 +216,7 @@ class Todos extends Component {
                   />
                 ) : (
                   <div className="container">
-                    <div className="row m-0 p-0">
+                    <div className="row">
                       {/* side panel */}
                       <div className="col-12 order-2 col-sm-12 order-sm-2 col-md-3 order-md-1 col-lg-3 order-md-1">
                         <SidePanel todos={todos} user={user} />
