@@ -106,8 +106,7 @@ class AdvnacedFilter extends Component {
 
     return (
       <>
-        <hr style={{ width: "90%" }} />
-        <div className="container advancedFilterContainer">
+        <div className="container todoContainer">
           <div className="row">
             <div className="col-12 col-sm-12 col-md-4 d-flex justify-content-center">
               <Spring

@@ -60,7 +60,7 @@ class Login extends Component {
         disabled: false,
       });
 
-      console.log("ERROR: ", err.response.data);
+      console.log("ERROR: ", err);
       this.setState({ error: err.response.data.msg });
     }
   };

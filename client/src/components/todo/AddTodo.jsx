@@ -84,10 +84,10 @@ class AddTodo extends Component {
 
   onDeleteInputField = (index, e) => {
     // e.preventDefault();
-    console.log("index: ", index);
+
     let fieldList = this.state.inputFields;
     fieldList.splice(index, 1);
-    console.log("Updeted list: ", fieldList);
+
     this.setState({ inputFields: fieldList });
   };
 
@@ -152,21 +152,7 @@ class AddTodo extends Component {
     const token = localStorage.getItem("auth-token");
 
     let updatedHistory = [...history];
-    const updatedTodo = {
-      userId: user.id,
-      title,
-      finished: false,
-      collapsed: false,
-      todoName: inputFields,
-      dueDate,
-      label,
-      status: "new",
-      important,
-      attachmentName,
-      historyId: res.data._id,
-      createdAt: res.data.createdAt,
-    };
-    updatedHistory.push(updatedTodo);
+    updatedHistory.push(res.data);
 
     try {
       await axios.put("/users/updateHistory", updatedHistory, {
@@ -179,6 +165,14 @@ class AddTodo extends Component {
     dispatch({
       type: "ADD_TODO",
       payload: res.data,
+    });
+
+    let updatedUser = user;
+    updatedUser.history.push(res.data);
+
+    dispatch({
+      type: "UPDATE_USER",
+      payload: updatedUser,
     });
 
     this.props.history.push("/");

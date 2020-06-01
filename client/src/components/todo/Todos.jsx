@@ -77,11 +77,11 @@ class Todos extends Component {
           } else {
             listToDisplay = todos.filter((todo) => todo.label === "Others");
           }
-          console.log(listToDisplay);
+
           if (token) {
             return (
               <React.Fragment>
-                <div className="row p-0 m-0 topRow">
+                <div className="row mx-0 topRow">
                   {/* search btn */}
                   <div className="col-6 order-2 col-sm-6 order-sm-2 col-md-2 order-md-1 p-0 m-0">
                     <button
@@ -218,14 +218,8 @@ class Todos extends Component {
                   <div className="container">
                     <div className="row m-0 p-0">
                       {/* side panel */}
-                      <div
-                        className="col-12 order-2 col-sm-12 order-sm-2 col-md-2 order-md-1 col-lg-2 order-md-1"
-                        style={{
-                          marginTop: "140px",
-                          paddingLeft: 0,
-                        }}
-                      >
-                        <SidePanel />
+                      <div className="col-12 order-2 col-sm-12 order-sm-2 col-md-3 order-md-1 col-lg-3 order-md-1">
+                        <SidePanel todos={todos} user={user} />
                       </div>
 
                       {/* todo list */}
@@ -239,7 +233,10 @@ class Todos extends Component {
                         ) : (
                           <div className="container caughtUpContainer">
                             <h3 className="text-secondary">
-                              You're all caught up! 😇
+                              You're all caught up!{" "}
+                              <span role="img" aria-label="smile">
+                                😇
+                              </span>
                             </h3>
                           </div>
                         )}

@@ -15,6 +15,7 @@ import { HashRouter as Router, Route, Switch } from "react-router-dom";
 
 import "./App.css";
 import History from "./components/todo/History";
+import CompletedTodos from "./components/todo/CompletedTodos";
 
 export default class App extends Component {
   render() {
@@ -27,6 +28,7 @@ export default class App extends Component {
               <Route exact path="/" component={Todos} />
               <Route exact path="/add" component={AddTodo} />
               <Route exact path="/history" component={History} />
+              <Route exact path="/completed" component={CompletedTodos} />
               <Route exact path="/edit/:id" component={EditTodo} />
               <Route exact path="/advancedFilter" component={AdvnacedFilter} />
               <Route exact path="/about" component={About} />

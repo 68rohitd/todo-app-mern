@@ -27,6 +27,12 @@ const reducer = (state, action) => {
         todos: [action.payload, ...state.todos],
       };
 
+    case "UPDATE_USER":
+      return {
+        ...state,
+        user: action.payload,
+      };
+
     case "DELETE_TODO":
       return {
         ...state,

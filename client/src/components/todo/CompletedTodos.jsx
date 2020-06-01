@@ -1,49 +1,16 @@
 import React, { Component } from "react";
 import { Consumer } from "../../context";
-import axios from "axios";
-import HistoryTodo from "./HistoryTodo";
+import Todo from "./Todo";
 import SidePanel from "../layouts/SidePanel";
 import { Redirect } from "react-router-dom";
 
 export default class History extends Component {
-  constructor() {
-    super();
-
-    this.state = {
-      history: [],
-    };
-  }
-
-  async componentDidMount() {
-    const token = localStorage.getItem("auth-token");
-    let userRes = await axios.get("/users", {
-      headers: { "x-auth-token": token },
-    });
-
-    this.setState({
-      history: userRes.data.history.reverse(),
-    });
-  }
-
-  onClearHistory = async () => {
-    const token = localStorage.getItem("auth-token");
-
-    const clearedHistory = [];
-    try {
-      await axios.put("/users/updateHistory", clearedHistory, {
-        headers: { "x-auth-token": token },
-      });
-    } catch (err) {
-      console.log("ERROR: ", err.response);
-    }
-    this.setState({ history: [] });
-  };
-
   render() {
     return (
       <Consumer>
         {(value) => {
           const { todos, user } = value;
+          let completedTodos = todos.filter((todoItem) => todoItem.finished);
 
           // getting token from localstorage to avoid flicker
           let token = localStorage.getItem("auth-token");
@@ -67,19 +34,9 @@ export default class History extends Component {
                 <div className="container mt-2">
                   <div className="row mx-0">
                     <div className="col">
-                      <h1 className="display-4 text-right text-dark font-weight-bold">
-                        History
-                      </h1>
-                    </div>
-
-                    <div className="col-3 my-auto">
-                      <button
-                        style={{ float: "right" }}
-                        className="btn btn-danger"
-                        onClick={() => this.onClearHistory()}
-                      >
-                        Clear History
-                      </button>
+                      <h3 className="display-4 text-right text-dark font-weight-bold">
+                        Completed Tasks
+                      </h3>
                     </div>
                   </div>
                 </div>
@@ -91,10 +48,10 @@ export default class History extends Component {
                       <SidePanel todos={todos} user={user} />
                     </div>
 
-                    {/* history list */}
+                    {/* Completed list */}
                     <div className="col order-1 todoContainer">
-                      {this.state.history.map((todoItem) => (
-                        <HistoryTodo key={todoItem._id} todoItem={todoItem} />
+                      {completedTodos.map((todoItem) => (
+                        <Todo key={todoItem._id} todoItem={todoItem} />
                       ))}
                     </div>
                   </div>
