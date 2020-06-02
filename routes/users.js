@@ -87,7 +87,6 @@ router.post("/login", async (req, res) => {
 // @desc: delete a user account
 router.delete("/delete/:id", auth, async (req, res) => {
   try {
-    console.log("id: ", req.user);
     const deletedUser = await User.findByIdAndDelete(req.user);
     res.json(deletedUser);
 
@@ -130,8 +129,6 @@ router.get("/", auth, async (req, res) => {
 
 // @desc: update users history
 router.put("/updateHistory/", auth, async (req, res) => {
-  console.log(req.user);
-
   User.findOneAndUpdate({ _id: req.user }, { history: req.body }, function (
     err,
     result
