@@ -89,6 +89,7 @@ router.route("/add").post((req, res) => {
   const important = req.body.important;
   const collapsed = req.body.collapsed;
   const attachmentName = req.body.attachmentName;
+  const reminderId = req.body.reminderId;
 
   const newTodo = new Todos({
     userId,
@@ -101,6 +102,7 @@ router.route("/add").post((req, res) => {
     important,
     collapsed,
     attachmentName,
+    reminderId,
   });
 
   newTodo
@@ -137,6 +139,7 @@ router.route("/update/:id").post((req, res) => {
       todo.important = req.body.important;
       todo.collapsed = req.body.collapsed;
       todo.attachmentName = req.body.attachmentName;
+      todo.reminderId = req.body.reminderId;
 
       todo
         .save()
@@ -144,6 +147,22 @@ router.route("/update/:id").post((req, res) => {
         .catch((err) => res.status(400).json("Error: " + err));
     })
     .catch((err) => res.status(400).json("Error: " + err));
+});
+
+// @desc: update reminderid
+router.route("/updateReminderId").post((req, res) => {
+  Todos.findByIdAndUpdate(
+    req.body.taskId,
+    { reminderId: req.body.eventId },
+    { new: true },
+    function (err, result) {
+      if (err) {
+        res.send(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
 });
 
 module.exports = router;

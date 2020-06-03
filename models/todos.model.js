@@ -14,6 +14,7 @@ const todosSchema = new Schema(
     important: { type: String }, //setting type string as regex cannot match boolean
     collapsed: { type: Boolean },
     attachmentName: { type: String },
+    reminderId: { type: String },
   },
   {
     timestamps: true,

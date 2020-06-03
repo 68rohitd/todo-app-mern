@@ -18,6 +18,10 @@ class AddTodo extends Component {
       label: "Others",
       important: "false",
 
+      // google calender
+      setReminder: false,
+      reminderId: "",
+
       // user history
       history: [],
 
@@ -28,8 +32,8 @@ class AddTodo extends Component {
     };
   }
 
+  // for loading history
   async componentDidMount() {
-    // const userId = localStorage.getItem("userId");
     const token = localStorage.getItem("auth-token");
 
     try {
@@ -91,6 +95,101 @@ class AddTodo extends Component {
     this.setState({ inputFields: fieldList });
   };
 
+  _onFocus = (e) => {
+    e.currentTarget.type = "date";
+  };
+  _onBlur = (e) => {
+    e.currentTarget.type = "text";
+  };
+
+  onFileChange = (e) => {
+    console.log(e.target.files[0]);
+    this.setState({
+      file: e.target.files[0],
+      attachmentName: e.target.files[0].name,
+    });
+  };
+
+  clearFile = (e) => {
+    e.preventDefault();
+    this.fileInput.value = "";
+    this.setState({ file: "", attachmentName: "" });
+  };
+
+  addToGoogleCalender = (user, todoItem, dispatch) => {
+    if (this.state.title && this.state.dueDate) {
+      var gapi = window.gapi;
+      var CLIENT_ID =
+        "487679379915-7rvf2ror46e4bbsj8t8obali4heq5qjm.apps.googleusercontent.com";
+      var API_KEY = "AIzaSyB_HYziuQ7j6s9CiqSgXV3YiGTzr5nc0xE";
+      var DISCOVERY_DOCS = [
+        "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest",
+      ];
+      var SCOPES = "https://www.googleapis.com/auth/calendar.events";
+
+      gapi.load("client:auth2", () => {
+        console.log("loaded client");
+
+        gapi.client.init({
+          apiKey: API_KEY,
+          clientId: CLIENT_ID,
+          discoveryDocs: DISCOVERY_DOCS,
+          scope: SCOPES,
+        });
+
+        gapi.client.load("calendar", "v3", () =>
+          console.log("loaded calender")
+        );
+
+        gapi.auth2
+          .getAuthInstance()
+          .signIn()
+          .then(() => {
+            var event = {
+              summary: this.state.title,
+              start: {
+                date: this.state.dueDate,
+              },
+              end: {
+                date: this.state.dueDate,
+              },
+              reminders: {
+                useDefault: false,
+                overrides: [
+                  { method: "email", minutes: 24 * 60 },
+                  { method: "popup", minutes: 10 },
+                ],
+              },
+            };
+
+            var request = gapi.client.calendar.events.insert({
+              calendarId: "primary",
+              resource: event,
+            });
+
+            console.log("add new event from addTodo");
+
+            request.execute((event) => {
+              console.log(event);
+
+              // send event id to db
+              axios
+                .post("/todos/updateReminderId", {
+                  eventId: event.id,
+                  taskId: todoItem._id,
+                })
+                .then((res) => {
+                  dispatch({
+                    type: "UPDATE_TODO",
+                    payload: res.data,
+                  });
+                });
+            });
+          });
+      });
+    }
+  };
+
   onSubmit = async (dispatch, user, e) => {
     e.preventDefault();
 
@@ -126,6 +225,7 @@ class AddTodo extends Component {
       important,
       history,
       attachmentName,
+      reminderId,
     } = this.state;
 
     if (dueDate === "" || dueDate === "Due date (if any)")
@@ -143,10 +243,15 @@ class AddTodo extends Component {
       status: "new",
       important,
       attachmentName,
+      reminderId,
     };
 
     const res = await axios.post("/todos/add", newTodo);
     console.log("Added: ", res.data);
+
+    // set reminder to google calender
+    if (this.state.setReminder)
+      this.addToGoogleCalender(user, res.data, dispatch);
 
     // updating to history
     const token = localStorage.getItem("auth-token");
@@ -176,27 +281,6 @@ class AddTodo extends Component {
     });
 
     this.props.history.push("/");
-  };
-
-  _onFocus = (e) => {
-    e.currentTarget.type = "date";
-  };
-  _onBlur = (e) => {
-    e.currentTarget.type = "text";
-  };
-
-  onFileChange = (e) => {
-    console.log(e.target.files[0]);
-    this.setState({
-      file: e.target.files[0],
-      attachmentName: e.target.files[0].name,
-    });
-  };
-
-  clearFile = (e) => {
-    e.preventDefault();
-    this.fileInput.value = "";
-    this.setState({ file: "", attachmentName: "" });
   };
 
   render() {
@@ -326,6 +410,27 @@ class AddTodo extends Component {
                                       onChange={this.onChange}
                                     />
                                   </div>
+                                  {/* set reminder */}
+                                  <div className="col">
+                                    <i
+                                      style={{
+                                        fontSize: "22px",
+                                        cursor: "pointer",
+                                        color: "#37454d",
+                                        marginTop: "8px",
+                                      }}
+                                      onClick={() =>
+                                        this.setState({
+                                          setReminder: !this.state.setReminder,
+                                        })
+                                      }
+                                      className={classNames("fa", {
+                                        "fa-bell": this.state.setReminder,
+                                        "fa-bell-slash": !this.state
+                                          .setReminder,
+                                      })}
+                                    ></i>
+                                  </div>
                                 </div>
                               </div>
 
@@ -392,7 +497,7 @@ class AddTodo extends Component {
                               {/* attachment */}
                               <div className="form-group">
                                 <div className="row">
-                                  <div className="col">
+                                  <div className="col-11">
                                     <p
                                       className="text-secondary"
                                       style={{ cursor: "pointer" }}

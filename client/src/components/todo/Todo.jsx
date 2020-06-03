@@ -18,15 +18,68 @@ class Todo extends Component {
     this.synth = window.speechSynthesis;
     this.dueAlert = false;
   }
-  onDelete(id, dispatch) {
+
+  onDelete(todoItem, dispatch) {
+    console.log("todoitem: ", todoItem);
     axios
-      .delete(`/todos/${id}`)
+      .delete(`/todos/${todoItem._id}`)
       .then((res) => console.log(res.data))
       .catch((err) => console.log(err.response));
 
+    // delete google calender event if added
+
+    if (todoItem.reminderId) {
+      console.log("im in");
+      var gapi = window.gapi;
+      var CLIENT_ID =
+        "487679379915-7rvf2ror46e4bbsj8t8obali4heq5qjm.apps.googleusercontent.com";
+      var API_KEY = "AIzaSyB_HYziuQ7j6s9CiqSgXV3YiGTzr5nc0xE";
+      var DISCOVERY_DOCS = [
+        "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest",
+      ];
+      var SCOPES = "https://www.googleapis.com/auth/calendar.events";
+
+      gapi.load("client:auth2", () => {
+        console.log("loaded client");
+
+        gapi.client.init({
+          apiKey: API_KEY,
+          clientId: CLIENT_ID,
+          discoveryDocs: DISCOVERY_DOCS,
+          scope: SCOPES,
+        });
+
+        gapi.client.load("calendar", "v3", () =>
+          console.log("loaded calender")
+        );
+
+        gapi.auth2
+          .getAuthInstance()
+          .signIn()
+          .then(() => {
+            // delete event
+            console.log("deleting event...");
+            var request = gapi.client.calendar.events.delete({
+              calendarId: "primary",
+              eventId: todoItem.reminderId,
+            });
+
+            request.execute((event) => {
+              console.log(event);
+
+              // send event id to db
+              axios.post("/todos/updateReminderId", {
+                eventId: event.id,
+                taskId: todoItem._id,
+              });
+            });
+          });
+      });
+    }
+
     dispatch({
       type: "DELETE_TODO",
-      payload: id,
+      payload: todoItem._id,
     });
   }
 
@@ -297,7 +350,7 @@ class Todo extends Component {
                             className="myIcon fa fa-times-circle text-danger"
                             onClick={this.onDelete.bind(
                               this,
-                              todoItem._id,
+                              todoItem,
                               dispatch
                             )}
                           ></i>
