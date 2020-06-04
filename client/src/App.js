@@ -24,7 +24,7 @@ export default class App extends Component {
       <Provider>
         <Router>
           <div>
-            <Header branding="Todo" />
+            <Header branding="clear.mind" />
             <Switch>
               <Route exact path="/" component={Todos} />
               <Route exact path="/add" component={AddTodo} />

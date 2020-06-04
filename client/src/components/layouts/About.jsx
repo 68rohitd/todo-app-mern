@@ -4,7 +4,6 @@ import checkList from "../../assets/images/checklist.svg";
 import "../../assets/about-styles/about.css";
 
 export default function About() {
-  // document.body.style.backgroundColor = "#eceff1";
   return (
     <div className="container mt-5">
       <div className="row m-0">
@@ -18,7 +17,9 @@ export default function About() {
               <div className="col-12 col-sm-12 ">
                 <h1 style={{ fontWeight: "lighter mt-5" }}>
                   <span className="font-italic">About</span>{" "}
-                  <span style={{ fontFamily: "Yesteryear" }}>Todo</span>
+                  <span style={{ fontFamily: "Pacifico, cursive" }}>
+                    clear.mind
+                  </span>
                 </h1>
                 <p className="lead font-italic">
                   Simple App to Manage Your Life
@@ -28,6 +29,9 @@ export default function About() {
                 <p className="mb-1 font-italic">In-built categories</p>
                 <p className="mb-1 font-italic">One click Filter todos</p>
                 <p className="mb-1 font-italic">Speak out loud feature</p>
+                <p className="mb-1 font-italic">
+                  Add reminders directly to your google calender!
+                </p>
                 <p className="mb-1 font-italic">
                   Access History, Attach files!
                 </p>

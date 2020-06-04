@@ -365,7 +365,7 @@ class Todo extends Component {
                       <div className="row cardBodyRow">
                         <div className="taskCol col-12">
                           <div className="row">
-                            <div className="col-12 col-sm-12 col-md-9 col-lg-9 pr-0">
+                            <div className="col-12 col-sm-12 col-md-8 col-lg-8 pr-0">
                               {/* todo title */}
                               <p
                                 className="font-weight-bold my-auto pb-2"
@@ -402,6 +402,15 @@ class Todo extends Component {
                                 ></div>
                               </div>
                             </div>
+                            {/* reminder icon */}
+                            {todoItem.reminderId ? (
+                              <div className="col-5 col-sm-5 col-md-1 col-lg-1">
+                                <i
+                                  className="fa fa-bell"
+                                  style={{ float: "right", marginTop: "5px" }}
+                                ></i>
+                              </div>
+                            ) : null}
                           </div>
 
                           {/* task name */}
