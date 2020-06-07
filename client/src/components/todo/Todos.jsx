@@ -29,21 +29,21 @@ class Todos extends Component {
     };
   }
   // for loading history
-  async componentDidMount() {
-    const token = localStorage.getItem("auth-token");
+  // async componentDidMount() {
+  //   const token = localStorage.getItem("auth-token");
 
-    try {
-      let userRes = await axios.get("/users", {
-        headers: { "x-auth-token": token },
-      });
+  //   try {
+  //     let userRes = await axios.get("/users", {
+  //       headers: { "x-auth-token": token },
+  //     });
 
-      if (userRes.data.history === null) userRes.data.history = [];
+  //     if (userRes.data.history === null) userRes.data.history = [];
 
-      this.setState({ history: userRes.data.history });
-    } catch (err) {
-      console.log(err);
-    }
-  }
+  //     this.setState({ history: userRes.data.history });
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // }
 
   onChange = (e) => {
     this.setState({
@@ -92,7 +92,13 @@ class Todos extends Component {
       // updating to history
       const token = localStorage.getItem("auth-token");
 
-      let updatedHistory = [...history];
+      // fetch all user hist
+      let userRes = await axios.get("/users", {
+        headers: { "x-auth-token": token },
+      });
+      if (userRes.data.history === null) userRes.data.history = [];
+
+      let updatedHistory = [...userRes.data.history];
       updatedHistory.push(res.data);
 
       try {
