@@ -10,7 +10,7 @@
 7. Search tasks by date, category, status, importance
 8.Login/Register feature, so you can access your tasks anytime, anywhere! <br>
 
-##How to run
+## How to run
 1. clone this repo
 2. cd todo-app-mern
 3. open terminal in this directory, then run "npm install" to install backend dependencies
