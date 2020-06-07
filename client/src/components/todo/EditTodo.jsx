@@ -357,10 +357,10 @@ class AddTodo extends Component {
     });
 
     try {
-      const histRes = await axios.put("/users/updateHistory", history, {
+      axios.put("/users/updateHistory", history, {
         headers: { "x-auth-token": token },
       });
-      console.log("result of history: ", histRes.data);
+      // console.log("result of history: ", histRes.data);
     } catch (err) {
       console.log("ERROR: ", err.response);
     }

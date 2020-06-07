@@ -66,7 +66,7 @@ class Todos extends Component {
 
   onAddQuickTask = async (dispatch, user, e) => {
     e.preventDefault();
-    console.log("submitting");
+    console.log(user.history);
 
     const { title, history } = this.state;
 
@@ -92,19 +92,23 @@ class Todos extends Component {
       // updating to history
       const token = localStorage.getItem("auth-token");
 
-      // fetch all user hist
-      let userRes = await axios.get("/users", {
-        headers: { "x-auth-token": token },
-      });
-      if (userRes.data.history === null) userRes.data.history = [];
-
-      let updatedHistory = [...userRes.data.history];
+      let updatedHistory = [...user.history];
       updatedHistory.push(res.data);
 
       try {
-        await axios.put("/users/updateHistory", updatedHistory, {
-          headers: { "x-auth-token": token },
-        });
+        axios
+          .put("/users/updateHistory", updatedHistory, {
+            headers: { "x-auth-token": token },
+          })
+          .then(() => {
+            let updatedUser = user;
+            updatedUser.history.push(res.data);
+
+            dispatch({
+              type: "UPDATE_USER",
+              payload: updatedUser,
+            });
+          });
       } catch (err) {
         console.log("ERROR: ", err.response);
       }
@@ -114,13 +118,13 @@ class Todos extends Component {
         payload: res.data,
       });
 
-      let updatedUser = user;
-      updatedUser.history.push(res.data);
+      // let updatedUser = user;
+      // updatedUser.history.push(res.data);
 
-      dispatch({
-        type: "UPDATE_USER",
-        payload: updatedUser,
-      });
+      // dispatch({
+      //   type: "UPDATE_USER",
+      //   payload: updatedUser,
+      // });
 
       this.setState({ title: "" });
     }

@@ -266,9 +266,19 @@ class AddTodo extends Component {
     updatedHistory.push(res.data);
 
     try {
-      await axios.put("/users/updateHistory", updatedHistory, {
-        headers: { "x-auth-token": token },
-      });
+      axios
+        .put("/users/updateHistory", updatedHistory, {
+          headers: { "x-auth-token": token },
+        })
+        .then(() => {
+          let updatedUser = user;
+          updatedUser.history.push(res.data);
+
+          dispatch({
+            type: "UPDATE_USER",
+            payload: updatedUser,
+          });
+        });
     } catch (err) {
       console.log("ERROR: ", err.response);
     }
@@ -278,13 +288,13 @@ class AddTodo extends Component {
       payload: res.data,
     });
 
-    let updatedUser = user;
-    updatedUser.history.push(res.data);
+    // let updatedUser = user;
+    // updatedUser.history.push(res.data);
 
-    dispatch({
-      type: "UPDATE_USER",
-      payload: updatedUser,
-    });
+    // dispatch({
+    //   type: "UPDATE_USER",
+    //   payload: updatedUser,
+    // });
 
     this.props.history.push("/");
   };
