@@ -385,8 +385,8 @@ class Todo extends Component {
                               </p>
                             </div>
                             {/* progress bar : show only if there are multi tasks*/}
-                            {todoItem.todoName.length > 0 ? (
-                              <div className="col-3  my-auto">
+                            <div className="col-3  my-auto">
+                              {todoItem.todoName.length > 0 ? (
                                 <div
                                   className="progress"
                                   style={{ height: "7px", width: "100px" }}
@@ -402,15 +402,19 @@ class Todo extends Component {
                                     aria-valuemax="100"
                                   ></div>
                                 </div>
-                              </div>
-                            ) : null}
+                              ) : null}
+                            </div>
 
                             {/* reminder icon */}
                             {todoItem.reminderId ? (
                               <div className="col-5 col-sm-5 col-md-1 col-lg-1">
                                 <i
                                   className="fa fa-bell"
-                                  style={{ float: "right", marginTop: "5px" }}
+                                  style={{
+                                    float: "right",
+                                    marginTop: "5px",
+                                    color: "#37454d",
+                                  }}
                                 ></i>
                               </div>
                             ) : null}

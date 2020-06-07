@@ -90,6 +90,7 @@ router.route("/add").post((req, res) => {
   const collapsed = req.body.collapsed;
   const attachmentName = req.body.attachmentName;
   const reminderId = req.body.reminderId;
+  const time = req.body.time;
 
   const newTodo = new Todos({
     userId,
@@ -103,6 +104,7 @@ router.route("/add").post((req, res) => {
     collapsed,
     attachmentName,
     reminderId,
+    time,
   });
 
   newTodo
@@ -140,6 +142,7 @@ router.route("/update/:id").post((req, res) => {
       todo.collapsed = req.body.collapsed;
       todo.attachmentName = req.body.attachmentName;
       todo.reminderId = req.body.reminderId;
+      todo.time = req.body.time;
 
       todo
         .save()

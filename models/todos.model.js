@@ -15,6 +15,7 @@ const todosSchema = new Schema(
     collapsed: { type: Boolean },
     attachmentName: { type: String },
     reminderId: { type: String },
+    time: { type: String },
   },
   {
     timestamps: true,

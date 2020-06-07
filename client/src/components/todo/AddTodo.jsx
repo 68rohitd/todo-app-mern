@@ -21,6 +21,7 @@ class AddTodo extends Component {
       // google calender
       setReminder: false,
       reminderId: "",
+      time: "",
 
       // user history
       history: [],
@@ -98,6 +99,7 @@ class AddTodo extends Component {
   _onFocus = (e) => {
     e.currentTarget.type = "date";
   };
+
   _onBlur = (e) => {
     e.currentTarget.type = "text";
   };
@@ -148,10 +150,12 @@ class AddTodo extends Component {
             var event = {
               summary: this.state.title,
               start: {
-                date: this.state.dueDate,
+                dateTime: `${this.state.dueDate}T${this.state.time}:00`,
+                timeZone: "Asia/Kolkata",
               },
               end: {
-                date: this.state.dueDate,
+                dateTime: `${this.state.dueDate}T${this.state.time}:00`,
+                timeZone: "Asia/Kolkata",
               },
               reminders: {
                 useDefault: false,
@@ -226,6 +230,7 @@ class AddTodo extends Component {
       history,
       attachmentName,
       reminderId,
+      time,
     } = this.state;
 
     if (dueDate === "" || dueDate === "Due date (if any)")
@@ -244,6 +249,7 @@ class AddTodo extends Component {
       important,
       attachmentName,
       reminderId,
+      time,
     };
 
     const res = await axios.post("/todos/add", newTodo);
@@ -351,7 +357,7 @@ class AddTodo extends Component {
                                   {/* mark as imp */}
                                   <div className="col">
                                     <button
-                                      className={classNames("btn ", {
+                                      className={classNames("btn btn-block", {
                                         "btn-danger":
                                           this.state.important === "true",
                                         "btn-outline-danger":
@@ -398,7 +404,7 @@ class AddTodo extends Component {
                               {/* due date */}
                               <div className="form-group">
                                 <div className="row">
-                                  <div className="col-8">
+                                  <div className="col-6">
                                     <input
                                       onFocus={this._onFocus}
                                       onBlur={this._onBlur}
@@ -412,27 +418,41 @@ class AddTodo extends Component {
                                   </div>
                                   {/* set reminder only if due-date is set*/}
                                   {this.state.dueDate ? (
-                                    <div className="col">
-                                      <i
-                                        style={{
-                                          fontSize: "22px",
-                                          cursor: "pointer",
-                                          color: "#37454d",
-                                          marginTop: "8px",
-                                        }}
-                                        onClick={() =>
-                                          this.setState({
-                                            setReminder: !this.state
+                                    <>
+                                      <div className="col-1 m-0 p-0">
+                                        <i
+                                          style={{
+                                            fontSize: "22px",
+                                            cursor: "pointer",
+                                            color: "#37454d",
+                                            marginTop: "8px",
+                                          }}
+                                          onClick={() =>
+                                            this.setState({
+                                              setReminder: !this.state
+                                                .setReminder,
+                                            })
+                                          }
+                                          className={classNames("fa", {
+                                            "fa-bell": this.state.setReminder,
+                                            "fa-bell-slash": !this.state
                                               .setReminder,
-                                          })
-                                        }
-                                        className={classNames("fa", {
-                                          "fa-bell": this.state.setReminder,
-                                          "fa-bell-slash": !this.state
-                                            .setReminder,
-                                        })}
-                                      ></i>
-                                    </div>
+                                          })}
+                                        ></i>
+                                      </div>
+                                      <div className="col-4 p-0">
+                                        {this.state.setReminder ? (
+                                          <input
+                                            className="form-control p-0"
+                                            name="time"
+                                            type="time"
+                                            required
+                                            value={this.state.time}
+                                            onChange={this.onChange}
+                                          />
+                                        ) : null}
+                                      </div>
+                                    </>
                                   ) : null}
                                 </div>
                               </div>

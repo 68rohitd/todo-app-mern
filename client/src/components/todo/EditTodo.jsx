@@ -28,6 +28,8 @@ class AddTodo extends Component {
       prevTitle: "",
       prevDueDate: "",
       prevSetReminder: false,
+      prevTime: "",
+      time: "",
 
       // history
       history: [],
@@ -65,6 +67,8 @@ class AddTodo extends Component {
         prevTitle: fetchedData.data.title,
         prevDueDate: fetchedData.data.dueDate,
         prevSetReminder: fetchedData.data.reminderId ? true : false,
+        time: fetchedData.data.time,
+        prevTime: fetchedData.data.time,
       });
     }, 300);
 
@@ -179,10 +183,12 @@ class AddTodo extends Component {
             var event = {
               summary: this.state.title,
               start: {
-                date: this.state.dueDate,
+                dateTime: `${this.state.dueDate}T${this.state.time}:00`,
+                timeZone: "Asia/Kolkata",
               },
               end: {
-                date: this.state.dueDate,
+                dateTime: `${this.state.dueDate}T${this.state.time}:00`,
+                timeZone: "Asia/Kolkata",
               },
               reminders: {
                 useDefault: false,
@@ -282,6 +288,7 @@ class AddTodo extends Component {
       history,
       attachmentName,
       reminderId,
+      time,
     } = this.state;
 
     const { id } = this.props.match.params;
@@ -314,16 +321,18 @@ class AddTodo extends Component {
       important,
       attachmentName,
       reminderId,
+      time,
     };
 
     const res = await axios.post(`/todos/update/${id}`, updatedTodo);
     console.log("updated todo: ", updatedTodo);
 
-    // goto google calender only if title or duedate has been changed!
+    // goto google calender only if title or duedate or time has been changed!
     if (
       this.state.prevTitle !== this.state.title ||
       this.state.prevDueDate !== this.state.dueDate ||
-      this.state.prevSetReminder !== this.state.setReminder
+      this.state.prevSetReminder !== this.state.setReminder ||
+      this.state.time !== this.state.prevTime
     ) {
       // set/update/delete reminder to google calender
       if (this.state.setReminder || this.state.reminderId)
@@ -479,7 +488,7 @@ class AddTodo extends Component {
                               {/* due date */}
                               <div className="form-group">
                                 <div className="row">
-                                  <div className="col-8">
+                                  <div className="col-6">
                                     <input
                                       onFocus={this._onFocus}
                                       onBlur={this._onBlur}
@@ -494,27 +503,41 @@ class AddTodo extends Component {
                                   {/* set reminder only if due-date is set*/}
                                   {this.state.dueDate &&
                                   this.state.dueDate !== "Due date (if any)" ? (
-                                    <div className="col">
-                                      <i
-                                        style={{
-                                          fontSize: "22px",
-                                          cursor: "pointer",
-                                          color: "#37454d",
-                                          marginTop: "8px",
-                                        }}
-                                        onClick={() =>
-                                          this.setState({
-                                            setReminder: !this.state
+                                    <>
+                                      <div className="col-1 m-0 p-0">
+                                        <i
+                                          style={{
+                                            fontSize: "22px",
+                                            cursor: "pointer",
+                                            color: "#37454d",
+                                            marginTop: "8px",
+                                          }}
+                                          onClick={() =>
+                                            this.setState({
+                                              setReminder: !this.state
+                                                .setReminder,
+                                            })
+                                          }
+                                          className={classNames("fa", {
+                                            "fa-bell": this.state.setReminder,
+                                            "fa-bell-slash": !this.state
                                               .setReminder,
-                                          })
-                                        }
-                                        className={classNames("fa", {
-                                          "fa-bell": this.state.setReminder,
-                                          "fa-bell-slash": !this.state
-                                            .setReminder,
-                                        })}
-                                      ></i>
-                                    </div>
+                                          })}
+                                        ></i>
+                                      </div>
+                                      <div className="col-4 p-0">
+                                        {this.state.setReminder ? (
+                                          <input
+                                            className="form-control p-0"
+                                            name="time"
+                                            type="time"
+                                            required
+                                            value={this.state.time}
+                                            onChange={this.onChange}
+                                          />
+                                        ) : null}
+                                      </div>
+                                    </>
                                   ) : null}
                                 </div>
                               </div>
