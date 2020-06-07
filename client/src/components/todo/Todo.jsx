@@ -276,7 +276,7 @@ class Todo extends Component {
               {(props) => (
                 <div style={props}>
                   <div className="myCard card pb-1" style={{ ...styles.card }}>
-                    <div className="card-header pt-2 pb-2">
+                    <div className="card-header pt-1 pb-1">
                       <div className="row">
                         {/* collapse icon */}
                         <div className="col-1 order-1 col-sm-3 order-sm-1 col-md-1 order-md-1 col-lg-1 order-lg-1">
@@ -384,24 +384,27 @@ class Todo extends Component {
                                 ) : null}
                               </p>
                             </div>
-                            {/* progress bar */}
-                            <div className="col-3  my-auto">
-                              <div
-                                className="progress"
-                                style={{ height: "7px", width: "100px" }}
-                              >
+                            {/* progress bar : show only if there are multi tasks*/}
+                            {todoItem.todoName.length > 0 ? (
+                              <div className="col-3  my-auto">
                                 <div
-                                  className="progress-bar bg-primary"
-                                  role="progressbar"
-                                  style={{
-                                    width: `${this.onGetProgress(todoItem)}%`,
-                                  }}
-                                  aria-valuenow="25"
-                                  aria-valuemin="0"
-                                  aria-valuemax="100"
-                                ></div>
+                                  className="progress"
+                                  style={{ height: "7px", width: "100px" }}
+                                >
+                                  <div
+                                    className="progress-bar bg-primary"
+                                    role="progressbar"
+                                    style={{
+                                      width: `${this.onGetProgress(todoItem)}%`,
+                                    }}
+                                    aria-valuenow="25"
+                                    aria-valuemin="0"
+                                    aria-valuemax="100"
+                                  ></div>
+                                </div>
                               </div>
-                            </div>
+                            ) : null}
+
                             {/* reminder icon */}
                             {todoItem.reminderId ? (
                               <div className="col-5 col-sm-5 col-md-1 col-lg-1">

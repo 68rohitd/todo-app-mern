@@ -491,27 +491,31 @@ class AddTodo extends Component {
                                       onChange={this.onChange}
                                     />
                                   </div>
-                                  {/* set reminder */}
-                                  <div className="col">
-                                    <i
-                                      style={{
-                                        fontSize: "22px",
-                                        cursor: "pointer",
-                                        color: "#37454d",
-                                        marginTop: "8px",
-                                      }}
-                                      onClick={() =>
-                                        this.setState({
-                                          setReminder: !this.state.setReminder,
-                                        })
-                                      }
-                                      className={classNames("fa", {
-                                        "fa-bell": this.state.setReminder,
-                                        "fa-bell-slash": !this.state
-                                          .setReminder,
-                                      })}
-                                    ></i>
-                                  </div>
+                                  {/* set reminder only if due-date is set*/}
+                                  {this.state.dueDate &&
+                                  this.state.dueDate !== "Due date (if any)" ? (
+                                    <div className="col">
+                                      <i
+                                        style={{
+                                          fontSize: "22px",
+                                          cursor: "pointer",
+                                          color: "#37454d",
+                                          marginTop: "8px",
+                                        }}
+                                        onClick={() =>
+                                          this.setState({
+                                            setReminder: !this.state
+                                              .setReminder,
+                                          })
+                                        }
+                                        className={classNames("fa", {
+                                          "fa-bell": this.state.setReminder,
+                                          "fa-bell-slash": !this.state
+                                            .setReminder,
+                                        })}
+                                      ></i>
+                                    </div>
+                                  ) : null}
                                 </div>
                               </div>
 

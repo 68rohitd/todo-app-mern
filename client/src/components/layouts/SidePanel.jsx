@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import "../../assets/sidePanel-styles/sidePanel.css";
 
 export default class SidePanel extends Component {
   render() {
@@ -15,14 +16,8 @@ export default class SidePanel extends Component {
           {/* All tasks*/}
           <ul className="list-group">
             <Link to="/" style={{ textDecoration: "none" }}>
-              <li className="list-group-item text-dark font-weight-bold ">
-                {currLocation === "" ? (
-                  <i
-                    className="fa fa-circle text-dark"
-                    style={{ fontSize: "10px" }}
-                  ></i>
-                ) : null}{" "}
-                All{" "}
+              <li className="myListItem list-group-item text-dark font-weight-bold">
+                {currLocation === "" ? <b>All </b> : "All"}{" "}
                 <div className="badge badge-dark">
                   {todos ? todos.length : null}
                 </div>
@@ -31,14 +26,8 @@ export default class SidePanel extends Component {
 
             {/* Completed tasks*/}
             <Link to="/completed" style={{ textDecoration: "none" }}>
-              <li className="list-group-item text-dark font-weight-bold">
-                {currLocation === "completed" ? (
-                  <i
-                    className="fa fa-circle text-dark"
-                    style={{ fontSize: "10px" }}
-                  ></i>
-                ) : null}{" "}
-                Completed{" "}
+              <li className="myListItem list-group-item text-dark font-weight-bold">
+                {currLocation === "completed" ? <b>Completed </b> : "Completed"}{" "}
                 <div className="badge badge-dark">
                   {todos
                     ? todos.filter((todoItem) => todoItem.finished).length
@@ -49,14 +38,12 @@ export default class SidePanel extends Component {
 
             {/* incompleted tasks */}
             <Link to="/incomplete" style={{ textDecoration: "none" }}>
-              <li className="list-group-item text-dark font-weight-bold">
+              <li className="myListItem list-group-item text-dark font-weight-bold">
                 {currLocation === "incomplete" ? (
-                  <i
-                    className="fa fa-circle text-dark"
-                    style={{ fontSize: "10px" }}
-                  ></i>
-                ) : null}{" "}
-                Incomplete{" "}
+                  <b>Incomplete </b>
+                ) : (
+                  "Incomplete"
+                )}{" "}
                 <div className="badge badge-dark">
                   {todos
                     ? todos.filter((todoItem) => !todoItem.finished).length
@@ -67,14 +54,8 @@ export default class SidePanel extends Component {
 
             {/* History of tasks*/}
             <Link to="/history" style={{ textDecoration: "none" }}>
-              <li className="list-group-item text-dark font-weight-bold">
-                {currLocation === "history" ? (
-                  <i
-                    className="fa fa-circle text-dark"
-                    style={{ fontSize: "10px" }}
-                  ></i>
-                ) : null}{" "}
-                History{" "}
+              <li className="myListItem list-group-item text-dark font-weight-bold">
+                {currLocation === "history" ? <b>History </b> : "History"}{" "}
                 <div className="badge badge-dark">
                   {user ? user.history.length : null}
                 </div>

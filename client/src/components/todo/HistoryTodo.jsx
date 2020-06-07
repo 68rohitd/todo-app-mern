@@ -44,7 +44,7 @@ class Todo extends Component {
         {(props) => (
           <div style={props}>
             <div className="myCard card pb-1" style={{ ...styles.card }}>
-              <div className="card-header pt-2 pb-2">
+              <div className="card-header pt-1 pb-1">
                 <div className="row">
                   {/* collapse icon */}
                   <div className="col-1">

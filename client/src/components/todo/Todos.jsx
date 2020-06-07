@@ -6,14 +6,20 @@ import AdvnacedFilter from "./AdvnacedFilter";
 import { Consumer } from "../../context";
 import "../../assets/todos-styles/todos.css";
 import SidePanel from "../layouts/SidePanel";
+import axios from "axios";
 
 class Todos extends Component {
   constructor() {
     super();
 
     this.state = {
-      currList: "All",
+      // quick add
+      title: "",
 
+      // user history
+      history: [],
+
+      currList: "All",
       label: "All Labels",
       status: "All Status",
       dueDate: "",
@@ -21,6 +27,22 @@ class Todos extends Component {
 
       showAdvancedFilterOptions: false,
     };
+  }
+  // for loading history
+  async componentDidMount() {
+    const token = localStorage.getItem("auth-token");
+
+    try {
+      let userRes = await axios.get("/users", {
+        headers: { "x-auth-token": token },
+      });
+
+      if (userRes.data.history === null) userRes.data.history = [];
+
+      this.setState({ history: userRes.data.history });
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   onChange = (e) => {
@@ -42,11 +64,67 @@ class Todos extends Component {
     });
   };
 
+  onAddQuickTask = async (dispatch, user, e) => {
+    e.preventDefault();
+    console.log("submitting");
+
+    const { title, history } = this.state;
+
+    if (title.trim()) {
+      // adding new todo to db
+      const newTodo = {
+        userId: user.id,
+        title,
+        finished: false,
+        collapsed: false,
+        todoName: [],
+        dueDate: "0000-00-00",
+        label: "Others",
+        status: "new",
+        important: "false",
+        attachmentName: "",
+        reminderId: "",
+      };
+
+      const res = await axios.post("/todos/add", newTodo);
+      console.log("Added: ", res.data);
+
+      // updating to history
+      const token = localStorage.getItem("auth-token");
+
+      let updatedHistory = [...history];
+      updatedHistory.push(res.data);
+
+      try {
+        await axios.put("/users/updateHistory", updatedHistory, {
+          headers: { "x-auth-token": token },
+        });
+      } catch (err) {
+        console.log("ERROR: ", err.response);
+      }
+
+      dispatch({
+        type: "ADD_TODO",
+        payload: res.data,
+      });
+
+      let updatedUser = user;
+      updatedUser.history.push(res.data);
+
+      dispatch({
+        type: "UPDATE_USER",
+        payload: updatedUser,
+      });
+
+      this.setState({ title: "" });
+    }
+  };
+
   render() {
     return (
       <Consumer>
         {(value) => {
-          let { todos, user } = value;
+          let { todos, user, dispatch } = value;
           if (user === undefined) user = "";
 
           // getting token from localstorage to avoid flicker
@@ -108,7 +186,7 @@ class Todos extends Component {
                       <button
                         type="button"
                         className={classNames(
-                          "btn btn-success mt-1 mb-1 mr-1 p-1 font-weight-bold",
+                          "btn btn-success mt-1 mb-1 mr-1 p-1",
                           {
                             activeLabel: this.state.currList === "All",
                           }
@@ -126,12 +204,9 @@ class Todos extends Component {
 
                       <button
                         type="button"
-                        className={classNames(
-                          "btn btn-primary m-1 p-1 font-weight-bold",
-                          {
-                            activeLabel: this.state.currList === "Personal",
-                          }
-                        )}
+                        className={classNames("btn btn-primary m-1 p-1", {
+                          activeLabel: this.state.currList === "Personal",
+                        })}
                         onClick={() => this.setState({ currList: "Personal" })}
                       >
                         Personal{" "}
@@ -142,12 +217,9 @@ class Todos extends Component {
 
                       <button
                         type="button"
-                        className={classNames(
-                          "btn btn-danger m-1 p-1 font-weight-bold",
-                          {
-                            activeLabel: this.state.currList === "Shopping",
-                          }
-                        )}
+                        className={classNames("btn btn-danger m-1 p-1", {
+                          activeLabel: this.state.currList === "Shopping",
+                        })}
                         onClick={() => this.setState({ currList: "Shopping" })}
                       >
                         Shopping{" "}
@@ -158,12 +230,9 @@ class Todos extends Component {
 
                       <button
                         type="button"
-                        className={classNames(
-                          "btn btn-dark m-1 p-1 font-weight-bold",
-                          {
-                            activeLabel: this.state.currList === "Work",
-                          }
-                        )}
+                        className={classNames("btn btn-dark m-1 p-1", {
+                          activeLabel: this.state.currList === "Work",
+                        })}
                         onClick={() => this.setState({ currList: "Work" })}
                       >
                         Work{" "}
@@ -173,7 +242,7 @@ class Todos extends Component {
                       <button
                         type="button"
                         className={classNames(
-                          "btn btn-warning mt-1 mb-1 ml-1 p-1 font-weight-bold text-light",
+                          "btn btn-warning mt-1 mb-1 ml-1 p-1 text-light",
                           {
                             activeLabel: this.state.currList === "Others",
                           }
@@ -193,7 +262,10 @@ class Todos extends Component {
                         type="button"
                         className="addBtn btn btn-secondary font-weight-bold mt-3"
                       >
-                        Add Task
+                        <i
+                          className="fa fa-plus"
+                          style={{ fontSize: 25, marginTop: "4px" }}
+                        ></i>
                       </button>
                     </Link>
                   </div>
@@ -222,8 +294,35 @@ class Todos extends Component {
                         <SidePanel todos={todos} user={user} />
                       </div>
 
-                      {/* todo list */}
                       <div className="col order-1">
+                        {/* quick add */}
+                        <form
+                          onSubmit={this.onAddQuickTask.bind(
+                            this,
+                            dispatch,
+                            user
+                          )}
+                        >
+                          <div className="col-12 ">
+                            <div className="input-group mt-2">
+                              <input
+                                type="text"
+                                name="title"
+                                className="form-control"
+                                placeholder="Quick add"
+                                onChange={this.onChange}
+                                value={this.state.title}
+                              />
+                              <div className="input-group-append">
+                                <button type="submit" className="btn btn-dark">
+                                  <i className="fa fa-plus"></i>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </form>
+
+                        {/* todo list */}
                         {listToDisplay.length > 0 ? (
                           <div className="container todoContainer">
                             {listToDisplay.map((todoItem) => (
