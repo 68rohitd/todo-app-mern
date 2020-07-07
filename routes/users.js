@@ -41,6 +41,7 @@ router.post("/register", async (req, res) => {
       email,
       password: passwordHash,
       displayName,
+      taskId: [],
     });
 
     const savedUser = await newUser.save();
@@ -77,6 +78,7 @@ router.post("/login", async (req, res) => {
         displayName: user.displayName,
         email: user.email,
         history: user.history,
+        taskId: user.taskId,
       },
     });
   } catch (err) {
@@ -139,6 +141,50 @@ router.put("/updateHistory/", auth, async (req, res) => {
       res.json(result);
     }
   });
+});
+
+// @desc: add task id to id list of the user
+router.post("/addTaskId", async (req, res) => {
+  const email = req.body.email;
+  const taskId = req.body.taskId;
+
+  const user = await User.findOne({ email: email });
+  let taskList = user.taskId;
+
+  if (user) {
+    taskList.push(taskId);
+  }
+
+  User.findOneAndUpdate(
+    { email },
+    { taskId: taskList },
+    { new: true }, //to get updated doc
+    (err, result) => {
+      if (err) {
+        res.status(400).json("Error: " + err);
+      } else {
+        res.json(result);
+      }
+    }
+  );
+});
+
+// @desc: get team todos
+router.post("/getTeamTodos/", auth, async (req, res) => {
+  const user = await User.findById(req.user);
+  const taskIds = user.taskId;
+  let teamTodos = [];
+
+  for (const taskId of taskIds) {
+    const todo = await Todos.findById(taskId);
+    //check if todo actually exists or not
+    if (todo) {
+      teamTodos.push(todo);
+    }
+    //@ else part you could delete the todo. hi haaa
+  }
+
+  res.json(teamTodos);
 });
 
 module.exports = router;

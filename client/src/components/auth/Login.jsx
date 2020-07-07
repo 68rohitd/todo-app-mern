@@ -44,6 +44,11 @@ class Login extends Component {
       const userTodos = await axios.get(
         `/todos/user/${loggedInUser.data.user.id}`
       );
+      // now getting team todos
+      const token = localStorage.getItem("auth-token");
+      const teamTodos = await axios.post("/users/getTeamTodos", null, {
+        headers: { "x-auth-token": token },
+      });
 
       dispatch({
         type: "LOGGED_IN",
@@ -51,6 +56,7 @@ class Login extends Component {
           user: loggedInUser.data.user,
           token: loggedInUser.data.token,
           todos: userTodos.data.reverse(),
+          teamTodos: teamTodos.data,
         },
       });
       this.props.history.push("/");

@@ -11,12 +11,14 @@ const reducer = (state, action) => {
         user: action.payload.user,
         token: action.payload.token,
         todos: action.payload.todos,
+        teamTodos: action.payload.teamTodos,
       };
 
     case "LOGGED_OUT":
       return {
         ...state,
         todos: [],
+        teamTodos: [],
         token: undefined,
         user: undefined,
       };
@@ -25,6 +27,12 @@ const reducer = (state, action) => {
       return {
         ...state,
         todos: [action.payload, ...state.todos],
+      };
+
+    case "ADD_TEAMTODO":
+      return {
+        ...state,
+        teamTodos: [action.payload, ...state.teamTodos],
       };
 
     case "UPDATE_USER":
@@ -41,10 +49,27 @@ const reducer = (state, action) => {
         ),
       };
 
+    case "DELETE_TEAMTODO":
+      return {
+        ...state,
+        teamTodos: state.teamTodos.filter(
+          (todoItem) => todoItem._id !== action.payload
+        ),
+      };
+
     case "UPDATE_TODO":
       return {
         ...state,
         todos: state.todos.map((todo) => {
+          if (todo._id === action.payload._id) return action.payload;
+          return todo;
+        }),
+      };
+
+    case "UPDATE_TEAMTODO":
+      return {
+        ...state,
+        teamTodos: state.teamTodos.map((todo) => {
           if (todo._id === action.payload._id) return action.payload;
           return todo;
         }),
@@ -61,6 +86,7 @@ export class Provider extends Component {
 
     this.state = {
       todos: [],
+      teamTodos: [],
       token: undefined,
       user: undefined,
 
@@ -87,10 +113,19 @@ export class Provider extends Component {
 
         // token valid, so get logged in users todos...
         const userTodos = await axios.get(`/todos/user/${userRes.data.id}`);
+
+        // start
+        // now get team todos
+        const teamTodos = await axios.post("/users/getTeamTodos", null, {
+          headers: { "x-auth-token": token },
+        });
+        // end
+
         this.setState({
           token,
           user: userRes.data,
           todos: userTodos.data.reverse(),
+          teamTodos: teamTodos.data,
         });
       }
     } catch (err) {

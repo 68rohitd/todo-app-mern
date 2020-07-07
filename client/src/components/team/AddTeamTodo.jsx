@@ -1,38 +1,30 @@
 import React, { Component } from "react";
-// import { Redirect } from "react-router-dom";
 import { Consumer } from "../../context";
+import EachTodoItem from "../todo/EachTodoItem";
 import axios from "axios";
 import classNames from "classnames";
-import { Redirect } from "react-router-dom";
-import EachTodoItem from "./EachTodoItem";
+import { Redirect, Link } from "react-router-dom";
 import { Spring } from "react-spring/renderprops";
 import "../../assets/addTodo-styles/addTodo.css";
+import AddMember from "./AddMember";
 
 class AddTodo extends Component {
   constructor() {
     super();
 
     this.state = {
-      userId: "",
       title: "",
-      inputFields: [],
+      inputFields: [{ finished: false, itemName: "" }],
       dueDate: "",
-      label: "",
-      status: "",
-      finished: false,
+      label: "Others",
       important: "false",
 
       // google calender
       setReminder: false,
       reminderId: "",
-
-      prevTitle: "",
-      prevDueDate: "",
-      prevSetReminder: false,
-      prevTime: "",
       time: "",
 
-      // history
+      // user history
       history: [],
 
       // attachment
@@ -42,47 +34,21 @@ class AddTodo extends Component {
     };
   }
 
+  // for loading history
   async componentDidMount() {
-    const { id } = this.props.match.params;
-
-    let fetchedData = await axios.get(`/todos/${id}`);
-
-    console.log("fetched data: ", fetchedData.data);
-
-    if (fetchedData.data.dueDate === "0000-00-00")
-      fetchedData.data.dueDate = "Due date (if any)";
-
-    if (fetchedData.data.attachmentName) this.setState({ attachFile: true });
-    setTimeout(() => {
-      this.setState({
-        userId: fetchedData.data.userId, //to avoid changin owner problem
-        title: fetchedData.data.title,
-        inputFields: fetchedData.data.todoName,
-        dueDate: fetchedData.data.dueDate,
-        label: fetchedData.data.label,
-        status: fetchedData.data.status,
-        finished: fetchedData.data.finished,
-        important: fetchedData.data.important,
-        attachmentName: fetchedData.data.attachmentName,
-        reminderId: fetchedData.data.reminderId,
-        setReminder: fetchedData.data.reminderId ? true : false,
-        prevTitle: fetchedData.data.title,
-        prevDueDate: fetchedData.data.dueDate,
-        prevSetReminder: fetchedData.data.reminderId ? true : false,
-        time: fetchedData.data.time,
-        prevTime: fetchedData.data.time,
-      });
-    }, 300);
-
-    // getting history of user
     const token = localStorage.getItem("auth-token");
-    const userHistory = await axios.get("/users", {
-      headers: { "x-auth-token": token },
-    });
 
-    let historyList = userHistory.data.history;
-    if (historyList === null) historyList = [];
-    this.setState({ history: historyList });
+    try {
+      let userRes = await axios.get("/users", {
+        headers: { "x-auth-token": token },
+      });
+
+      if (userRes.data.history === null) userRes.data.history = [];
+
+      this.setState({ history: userRes.data.history });
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   onChangeInputFields = (index) => (e) => {
@@ -94,16 +60,16 @@ class AddTodo extends Component {
     });
   };
 
-  onChange = (e) => {
-    this.setState({
-      [e.target.name]: e.target.value,
-    });
-  };
-
   onToggleMarkAsImp = (e) => {
     e.preventDefault();
     this.setState({
       important: this.state.important === "true" ? "false" : "true",
+    });
+  };
+
+  onChange = (e) => {
+    this.setState({
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -124,10 +90,10 @@ class AddTodo extends Component {
 
   onDeleteInputField = (index, e) => {
     // e.preventDefault();
-    console.log("index: ", index);
+
     let fieldList = this.state.inputFields;
     fieldList.splice(index, 1);
-    console.log("Updeted list: ", fieldList);
+
     this.setState({ inputFields: fieldList });
   };
 
@@ -201,35 +167,12 @@ class AddTodo extends Component {
               },
             };
 
-            // update event
-            if (this.state.reminderId && this.state.setReminder) {
-              console.log("upadating evet...");
-              var request = gapi.client.calendar.events.update({
-                calendarId: "primary",
-                eventId: this.state.reminderId,
-                resource: event,
-              });
-            }
-            // add new event
-            if (
-              this.state.setReminder &&
-              (this.state.reminderId === "" || this.state.reminderId === null)
-            ) {
-              console.log("adding new event from editTodo");
-              var request = gapi.client.calendar.events.insert({
-                calendarId: "primary",
-                resource: event,
-              });
-            }
+            var request = gapi.client.calendar.events.insert({
+              calendarId: "primary",
+              resource: event,
+            });
 
-            // delete event
-            if (this.state.setReminder === false && this.state.reminderId) {
-              console.log("deleting event...");
-              var request = gapi.client.calendar.events.delete({
-                calendarId: "primary",
-                eventId: this.state.reminderId,
-              });
-            }
+            console.log("add new event from addTodo");
 
             request.execute((event) => {
               console.log(event);
@@ -281,11 +224,9 @@ class AddTodo extends Component {
 
     let {
       title,
-      inputFields,
       dueDate,
       label,
-      status,
-      finished,
+      inputFields,
       important,
       history,
       attachmentName,
@@ -293,86 +234,67 @@ class AddTodo extends Component {
       time,
     } = this.state;
 
-    const { id } = this.props.match.params;
-
     if (dueDate === "" || dueDate === "Due date (if any)")
       dueDate = "0000-00-00";
 
-    // check if added new item, if so set status to 'in Progress'
-    status = "in progress";
-    finished = false;
-    if (inputFields.every((item) => item.finished === true)) {
-      status = "completed";
-      finished = true;
-    }
-    if (inputFields.every((item) => item.finished === false)) {
-      status = "new";
-      finished = false;
-    }
-
-    // updating the todo
-    const updatedTodo = {
-      userId: this.state.userId,
+    // adding new todo to db
+    const newTodo = {
+      userId: "000",
       title,
+      finished: false,
+      collapsed: false,
       todoName: inputFields,
       dueDate,
       label,
-      status,
-      finished,
-      collapsed: false,
+      status: "new",
       important,
       attachmentName,
       reminderId,
       time,
     };
 
-    const res = await axios.post(`/todos/update/${id}`, updatedTodo);
-    console.log("updated todo: ", updatedTodo);
+    const res = await axios.post("/todos/add", newTodo);
+    console.log("Added: ", res.data);
 
-    // goto google calender only if title or duedate or time has been changed!
-    if (
-      this.state.prevTitle !== this.state.title ||
-      this.state.prevDueDate !== this.state.dueDate ||
-      this.state.prevSetReminder !== this.state.setReminder ||
-      this.state.time !== this.state.prevTime
-    ) {
-      // set/update/delete reminder to google calender
-      if (this.state.setReminder || this.state.reminderId)
-        this.addToGoogleCalender(user, res.data, dispatch);
-    }
+    // add task id to the owner of todo also to view in his "Team tab"
+    const email = user.email;
+    const taskId = res.data._id;
+    await axios.post("/users/addTaskId", { email, taskId });
 
-    // updating user's history todo too
+    // set reminder to google calender
+    if (this.state.setReminder)
+      this.addToGoogleCalender(user, res.data, dispatch);
+
+    // updating to history
     const token = localStorage.getItem("auth-token");
 
-    history.forEach((item) => {
-      if (item._id === res.data._id) {
-        item.userId = user.id;
-        item.title = title;
-        item.todoName = inputFields;
-        item.dueDate = dueDate;
-        item.label = label;
-        item.status = status;
-        item.finished = finished;
-        item.collapsed = false;
-        item.important = important;
-      }
-    });
+    let updatedHistory = [...history];
+    updatedHistory.push(res.data);
 
     try {
-      axios.put("/users/updateHistory", history, {
-        headers: { "x-auth-token": token },
-      });
-      // console.log("result of history: ", histRes.data);
+      axios
+        .put("/users/updateHistory", updatedHistory, {
+          headers: { "x-auth-token": token },
+        })
+        .then(() => {
+          let updatedUser = user;
+          updatedUser.history.push(res.data);
+
+          dispatch({
+            type: "UPDATE_USER",
+            payload: updatedUser,
+          });
+        });
     } catch (err) {
       console.log("ERROR: ", err.response);
     }
 
     dispatch({
-      type: "UPDATE_TODO",
+      type: "ADD_TEAMTODO",
       payload: res.data,
     });
 
-    this.props.history.push("/");
+    this.props.history.push(`/addMember/${res.data._id}`);
   };
 
   render() {
@@ -424,7 +346,7 @@ class AddTodo extends Component {
                               )}
                             >
                               <h3 className="headingText text-center">
-                                Update Your Task
+                                Add New Team task
                               </h3>
                               {/* title */}
                               <div className="form-group">
@@ -432,8 +354,8 @@ class AddTodo extends Component {
                                   <div className="col-12 col-sm-8 col-md-8 col-lg-8 mb-1">
                                     <input
                                       required
-                                      name="title"
                                       className="form-control"
+                                      name="title"
                                       type="text"
                                       placeholder="Task title"
                                       onChange={this.onChange}
@@ -457,7 +379,7 @@ class AddTodo extends Component {
                                 </div>
                               </div>
 
-                              {/* each todo */}
+                              {/* each todo  */}
                               <div className="form-group">
                                 {this.state.inputFields.map((data, index) => (
                                   <EachTodoItem
@@ -497,14 +419,13 @@ class AddTodo extends Component {
                                       name="dueDate"
                                       type="text"
                                       className="form-control"
-                                      placeholder="Enter Due date"
+                                      placeholder="Due date (if any)"
                                       value={this.state.dueDate}
                                       onChange={this.onChange}
                                     />
                                   </div>
                                   {/* set reminder only if due-date is set*/}
-                                  {this.state.dueDate &&
-                                  this.state.dueDate !== "Due date (if any)" ? (
+                                  {this.state.dueDate ? (
                                     <>
                                       <div className="col-1 m-0 p-0">
                                         <i
@@ -607,7 +528,7 @@ class AddTodo extends Component {
                               {/* attachment */}
                               <div className="form-group">
                                 <div className="row">
-                                  <div className="col">
+                                  <div className="col-11">
                                     <p
                                       className="text-secondary"
                                       style={{ cursor: "pointer" }}
@@ -665,11 +586,15 @@ class AddTodo extends Component {
                               </div>
 
                               <br />
-                              <input
-                                type="submit"
-                                value="Update"
-                                className="btn btn-danger btn-block"
-                              />
+                              <div className="row">
+                                <div className="col">
+                                  <input
+                                    type="submit"
+                                    value="Continue to add Members"
+                                    className="btn btn-danger btn-block"
+                                  />
+                                </div>
+                              </div>
                             </form>
                           </div>
                         )}

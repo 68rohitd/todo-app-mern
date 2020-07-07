@@ -4,11 +4,11 @@ import { Consumer } from "../../context";
 import axios from "axios";
 import classNames from "classnames";
 import { Redirect } from "react-router-dom";
-import EachTodoItem from "./EachTodoItem";
+import EachTodoItem from "../todo/EachTodoItem";
 import { Spring } from "react-spring/renderprops";
 import "../../assets/addTodo-styles/addTodo.css";
 
-class AddTodo extends Component {
+class EditTeamTodo extends Component {
   constructor() {
     super();
 
@@ -312,7 +312,7 @@ class AddTodo extends Component {
 
     // updating the todo
     const updatedTodo = {
-      userId: this.state.userId,
+      userId: "000",
       title,
       todoName: inputFields,
       dueDate,
@@ -362,17 +362,16 @@ class AddTodo extends Component {
       axios.put("/users/updateHistory", history, {
         headers: { "x-auth-token": token },
       });
-      // console.log("result of history: ", histRes.data);
     } catch (err) {
       console.log("ERROR: ", err.response);
     }
 
     dispatch({
-      type: "UPDATE_TODO",
+      type: "UPDATE_TEAMTODO",
       payload: res.data,
     });
 
-    this.props.history.push("/");
+    this.props.history.push(`/addMember/${res.data._id}`);
   };
 
   render() {
@@ -424,7 +423,7 @@ class AddTodo extends Component {
                               )}
                             >
                               <h3 className="headingText text-center">
-                                Update Your Task
+                                Update Team Task
                               </h3>
                               {/* title */}
                               <div className="form-group">
@@ -688,4 +687,4 @@ class AddTodo extends Component {
   }
 }
 
-export default AddTodo;
+export default EditTeamTodo;

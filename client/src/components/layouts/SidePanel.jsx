@@ -52,6 +52,13 @@ export default class SidePanel extends Component {
               </li>
             </Link>
 
+            {/* team tasks */}
+            <Link to="/team" style={{ textDecoration: "none" }}>
+              <li className="myListItem list-group-item text-dark font-weight-bold">
+                {currLocation === "team" ? <b>Team </b> : "Team"}{" "}
+              </li>
+            </Link>
+
             {/* History of tasks*/}
             <Link to="/history" style={{ textDecoration: "none" }}>
               <li className="myListItem list-group-item text-dark font-weight-bold">
