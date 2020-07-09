@@ -50,6 +50,19 @@ class Login extends Component {
         headers: { "x-auth-token": token },
       });
 
+      // now get inviteList
+      const inviteList = await axios.post("/users/getInviteList", null, {
+        headers: { "x-auth-token": token },
+      });
+
+      // filter invite list
+      let filteredInviteList = [];
+      inviteList.data.forEach((invite) => {
+        if (invite.accepted === false) {
+          filteredInviteList.push(invite);
+        }
+      });
+
       dispatch({
         type: "LOGGED_IN",
         payload: {
@@ -57,6 +70,7 @@ class Login extends Component {
           token: loggedInUser.data.token,
           todos: userTodos.data.reverse(),
           teamTodos: teamTodos.data,
+          inviteList: filteredInviteList,
         },
       });
       this.props.history.push("/");

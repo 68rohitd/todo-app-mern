@@ -19,7 +19,7 @@ class TeamTodo extends Component {
     this.dueAlert = false;
   }
 
-  onDelete(todoItem, dispatch) {
+  onDelete(todoItem, dispatch, updateTeamTodos) {
     console.log("todoitem: ", todoItem);
     axios
       .delete(`/todos/${todoItem._id}`)
@@ -79,6 +79,9 @@ class TeamTodo extends Component {
       type: "DELETE_TEAMTODO",
       payload: todoItem._id,
     });
+
+    // to refresh TeamTodos page.
+    updateTeamTodos();
   }
 
   onGetTime = (info) => {
@@ -349,7 +352,8 @@ class TeamTodo extends Component {
                             onClick={this.onDelete.bind(
                               this,
                               todoItem,
-                              dispatch
+                              dispatch,
+                              this.props.updateTeamTodos
                             )}
                           ></i>
                         </div>

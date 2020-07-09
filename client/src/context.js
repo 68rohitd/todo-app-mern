@@ -12,6 +12,7 @@ const reducer = (state, action) => {
         token: action.payload.token,
         todos: action.payload.todos,
         teamTodos: action.payload.teamTodos,
+        inviteList: action.payload.inviteList,
       };
 
     case "LOGGED_OUT":
@@ -19,6 +20,7 @@ const reducer = (state, action) => {
         ...state,
         todos: [],
         teamTodos: [],
+        inviteList: [],
         token: undefined,
         user: undefined,
       };
@@ -75,6 +77,13 @@ const reducer = (state, action) => {
         }),
       };
 
+    case "UPDATE_INVITELIST":
+      return {
+        ...state,
+        inviteList: action.payload.inviteList,
+        teamTodos: action.payload.teamTodos,
+      };
+
     default:
       return state;
   }
@@ -87,6 +96,7 @@ export class Provider extends Component {
     this.state = {
       todos: [],
       teamTodos: [],
+      inviteList: [],
       token: undefined,
       user: undefined,
 
@@ -119,11 +129,25 @@ export class Provider extends Component {
           headers: { "x-auth-token": token },
         });
 
+        // now get inviteList
+        const inviteList = await axios.post("/users/getInviteList", null, {
+          headers: { "x-auth-token": token },
+        });
+
+        // filter invite list
+        let filteredInviteList = [];
+        inviteList.data.forEach((invite) => {
+          if (invite.accepted === false) {
+            filteredInviteList.push(invite);
+          }
+        });
+
         this.setState({
           token,
           user: userRes.data,
           todos: userTodos.data.reverse(),
           teamTodos: teamTodos.data,
+          inviteList: filteredInviteList,
         });
       }
     } catch (err) {

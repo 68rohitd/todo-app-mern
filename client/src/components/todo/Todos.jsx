@@ -28,22 +28,6 @@ class Todos extends Component {
       showAdvancedFilterOptions: false,
     };
   }
-  // for loading history
-  // async componentDidMount() {
-  //   const token = localStorage.getItem("auth-token");
-
-  //   try {
-  //     let userRes = await axios.get("/users", {
-  //       headers: { "x-auth-token": token },
-  //     });
-
-  //     if (userRes.data.history === null) userRes.data.history = [];
-
-  //     this.setState({ history: userRes.data.history });
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // }
 
   onChange = (e) => {
     this.setState({
@@ -66,9 +50,8 @@ class Todos extends Component {
 
   onAddQuickTask = async (dispatch, user, e) => {
     e.preventDefault();
-    console.log(user.history);
 
-    const { title, history } = this.state;
+    const { title } = this.state;
 
     if (title.trim()) {
       // adding new todo to db
@@ -118,23 +101,48 @@ class Todos extends Component {
         payload: res.data,
       });
 
-      // let updatedUser = user;
-      // updatedUser.history.push(res.data);
-
-      // dispatch({
-      //   type: "UPDATE_USER",
-      //   payload: updatedUser,
-      // });
-
       this.setState({ title: "" });
     }
+  };
+
+  onAcceptedInvite = async (invite, inviteList, user, dispatch, e) => {
+    const email = user.email;
+    const taskId = invite.taskId;
+    const token = localStorage.getItem("auth-token");
+
+    // add taskid to the users list
+    await axios.post("/users/addTaskId", { email, taskId });
+
+    // now get updated team todos
+    const teamTodos = await axios.post("/users/getTeamTodos", null, {
+      headers: { "x-auth-token": token },
+    });
+
+    // remove this invite link from the user too
+    let updatedInviteList = inviteList.filter(
+      (invite) => invite.taskId !== taskId
+    );
+
+    // to update screen
+    dispatch({
+      type: "UPDATE_INVITELIST",
+      payload: {
+        inviteList: updatedInviteList,
+        teamTodos: teamTodos.data,
+      },
+    });
+
+    await axios.post("/users/updateInviteList", {
+      updatedInviteList,
+      email,
+    });
   };
 
   render() {
     return (
       <Consumer>
         {(value) => {
-          let { todos, user, dispatch } = value;
+          let { todos, user, dispatch, inviteList } = value;
           if (user === undefined) user = "";
 
           // getting token from localstorage to avoid flicker
@@ -302,6 +310,23 @@ class Todos extends Component {
                       {/* side panel */}
                       <div className="col-12 order-2 col-sm-12 order-sm-2 col-md-3 order-md-1 col-lg-3 order-md-1">
                         <SidePanel todos={todos} user={user} />
+
+                        {/* display invites */}
+                        {inviteList.map((invite, index) => (
+                          <button
+                            className="btn btn-success my-2"
+                            key={index}
+                            onClick={this.onAcceptedInvite.bind(
+                              this,
+                              invite,
+                              inviteList,
+                              user,
+                              dispatch
+                            )}
+                          >
+                            you have an invite from {invite.from}
+                          </button>
+                        ))}
                       </div>
 
                       <div className="col order-1">

@@ -125,6 +125,7 @@ router.get("/", auth, async (req, res) => {
   res.json({
     displayName: user.displayName,
     id: user._id,
+    email: user.email,
     history: user.history,
   });
 });
@@ -141,6 +142,56 @@ router.put("/updateHistory/", auth, async (req, res) => {
       res.json(result);
     }
   });
+});
+
+// @desc: invite user
+router.post("/invite", async (req, res) => {
+  const toEmail = req.body.toEmail; //whome to invite
+  const fromEmail = req.body.fromEmail;
+  const taskId = req.body.taskId; //invite to this task id
+  const user = await User.findOne({ email: toEmail });
+
+  if (user) {
+    let inviteList = user.inviteList;
+
+    const invite = {
+      from: fromEmail,
+      taskId: taskId,
+      accepted: false,
+    };
+    inviteList.push(invite);
+
+    User.findOneAndUpdate(
+      { email: toEmail },
+      { inviteList },
+      { new: true }, //to get updated doc
+      (err, result) => {
+        if (err) {
+          res.status(400).json("Error: " + err);
+        } else {
+          res.json(result);
+        }
+      }
+    );
+  }
+});
+
+// @desc: update invite list user
+router.post("/updateInviteList", async (req, res) => {
+  const updatedInviteList = req.body.updatedInviteList;
+  const email = req.body.email;
+
+  User.findOneAndUpdate(
+    { email },
+    { inviteList: updatedInviteList },
+    (err, result) => {
+      if (err) {
+        res.status(400).json("Error: " + err);
+      } else {
+        res.json(result);
+      }
+    }
+  );
 });
 
 // @desc: add task id to id list of the user
@@ -196,6 +247,17 @@ router.post("/removeTaskId", async (req, res) => {
         }
       }
     );
+  }
+});
+
+// @desc: get inviteList
+router.post("/getInviteList/", auth, async (req, res) => {
+  const user = await User.findById(req.user);
+
+  if (user) {
+    res.json(user.inviteList);
+  } else {
+    console.log("no user found");
   }
 });
 

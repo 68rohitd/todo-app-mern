@@ -15,12 +15,34 @@ export default class TeamTodos extends Component {
     };
   }
 
+  async componentDidMount() {
+    // check if there are new team todos.
+    // get updated team todos
+    const token = localStorage.getItem("auth-token");
+    const teamTodos = await axios.post("/users/getTeamTodos", null, {
+      headers: { "x-auth-token": token },
+    });
+
+    this.setState({ teamTodos: teamTodos.data });
+  }
+
+  updateTeamTodos = async () => {
+    // check if there are new team todos.
+    // get updated team todos
+    const token = localStorage.getItem("auth-token");
+    const teamTodos = await axios.post("/users/getTeamTodos", null, {
+      headers: { "x-auth-token": token },
+    });
+
+    this.setState({ teamTodos: teamTodos.data });
+  };
+
   render() {
     return (
       <Consumer>
         {(value) => {
-          const { todos, user, teamTodos } = value;
-          let completedTodos = todos.filter((todoItem) => todoItem.finished);
+          const { todos, user } = value;
+          // let completedTodos = todos.filter((todoItem) => todoItem.finished);
 
           // getting token from localstorage to avoid flicker
           let token = localStorage.getItem("auth-token");
@@ -79,9 +101,19 @@ export default class TeamTodos extends Component {
                         </button>
                       </Link>
 
-                      {teamTodos.map((todoItem) => (
-                        <TeamTodo key={todoItem._id} todoItem={todoItem} />
-                      ))}
+                      {this.state.teamTodos.length > 0 ? (
+                        this.state.teamTodos.map((todoItem) => (
+                          <TeamTodo
+                            key={todoItem._id}
+                            todoItem={todoItem}
+                            updateTeamTodos={this.updateTeamTodos}
+                          />
+                        ))
+                      ) : (
+                        <h3 className="emptyResult text-secondary">
+                          No Team tasks yet!
+                        </h3>
+                      )}
                     </div>
                   </div>
                 </div>

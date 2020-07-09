@@ -3,10 +3,9 @@ import { Consumer } from "../../context";
 import EachTodoItem from "../todo/EachTodoItem";
 import axios from "axios";
 import classNames from "classnames";
-import { Redirect, Link } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import { Spring } from "react-spring/renderprops";
 import "../../assets/addTodo-styles/addTodo.css";
-import AddMember from "./AddMember";
 
 class AddTodo extends Component {
   constructor() {

@@ -8,6 +8,7 @@ const userSchema = new Schema({
   displayName: { type: String },
   history: { type: Array },
   taskId: { type: Array },
+  inviteList: { type: Array },
 });
 
 const User = mongoose.model("User", userSchema);
