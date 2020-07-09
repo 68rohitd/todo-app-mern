@@ -666,7 +666,7 @@ class EditTeamTodo extends Component {
                               <br />
                               <input
                                 type="submit"
-                                value="Update"
+                                value="Continue to add/remove members"
                                 className="btn btn-danger btn-block"
                               />
                             </form>

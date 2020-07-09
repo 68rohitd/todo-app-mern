@@ -60,12 +60,19 @@ class Signup extends Component {
         `/todos/user/${loggedInUser.data.user.id}`
       );
       console.log("logged in users todos: ", userTodos.data);
+
+      // now getting team todos
+      const token = localStorage.getItem("auth-token");
+      const teamTodos = await axios.post("/users/getTeamTodos", null, {
+        headers: { "x-auth-token": token },
+      });
       dispatch({
         type: "LOGGED_IN",
         payload: {
           user: loggedInUser.data.user,
           token: loggedInUser.data.token,
           todos: userTodos.data.reverse(),
+          teamTodos: teamTodos.data,
         },
       });
       this.props.history.push("/");

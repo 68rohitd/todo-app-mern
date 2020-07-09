@@ -114,12 +114,10 @@ export class Provider extends Component {
         // token valid, so get logged in users todos...
         const userTodos = await axios.get(`/todos/user/${userRes.data.id}`);
 
-        // start
         // now get team todos
         const teamTodos = await axios.post("/users/getTeamTodos", null, {
           headers: { "x-auth-token": token },
         });
-        // end
 
         this.setState({
           token,

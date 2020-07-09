@@ -15,17 +15,6 @@ export default class TeamTodos extends Component {
     };
   }
 
-  // async componentDidMount() {
-  //   // get team tasks
-  //   const token = localStorage.getItem("auth-token");
-  //   const teamTodos = await axios.post("/users/getTeamTodos", null, {
-  //     headers: { "x-auth-token": token },
-  //   });
-
-  //   console.log("team todos: ", teamTodos.data);
-  //   this.setState({ teamTodos: teamTodos.data });
-  // }
-
   render() {
     return (
       <Consumer>
@@ -81,21 +70,18 @@ export default class TeamTodos extends Component {
 
                     {/* main content */}
                     <div className="col">
-                      <div className="row">
-                        <Link to="/addTeam">
-                          <button
-                            type="button"
-                            className=" btn btn-secondary font-weight-bold mt-3"
-                          >
-                            Add Team
-                          </button>
-                        </Link>
-                      </div>
-                      <div className="row">
-                        {teamTodos.map((todoItem) => (
-                          <TeamTodo key={todoItem._id} todoItem={todoItem} />
-                        ))}
-                      </div>
+                      <Link to="/addTeam">
+                        <button
+                          type="button"
+                          className=" btn btn-primary font-weight-bold my-3"
+                        >
+                          Add new Team Task
+                        </button>
+                      </Link>
+
+                      {teamTodos.map((todoItem) => (
+                        <TeamTodo key={todoItem._id} todoItem={todoItem} />
+                      ))}
                     </div>
                   </div>
                 </div>

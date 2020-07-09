@@ -169,20 +169,65 @@ router.post("/addTaskId", async (req, res) => {
   );
 });
 
+// @desc: remove task id from id list of the user (remove user from the team)
+router.post("/removeTaskId", async (req, res) => {
+  const emailToRemove = req.body.emailToRemove;
+  const taskIdToRemove = req.body.taskId;
+  console.log(emailToRemove, taskIdToRemove);
+  const userToRemove = await User.findOne({ email: emailToRemove });
+
+  if (userToRemove) {
+    let taskList = userToRemove.taskId;
+    const index = taskList.indexOf(taskIdToRemove);
+    // if task is present in tasklist, then only remove
+    if (index >= 0) {
+      taskList.splice(index, 1);
+    }
+
+    User.findOneAndUpdate(
+      { email: emailToRemove },
+      { taskId: taskList },
+      { new: true }, //to get updated doc
+      (err, result) => {
+        if (err) {
+          res.status(400).json("Error: " + err);
+        } else {
+          res.json(result);
+        }
+      }
+    );
+  }
+});
+
 // @desc: get team todos
 router.post("/getTeamTodos/", auth, async (req, res) => {
   const user = await User.findById(req.user);
-  const taskIds = user.taskId;
+  let taskIds = user.taskId;
   let teamTodos = [];
-
-  for (const taskId of taskIds) {
-    const todo = await Todos.findById(taskId);
+  // console.log("task ids before: ", taskIds);
+  for (let taskId = 0; taskId < taskIds.length; taskId++) {
+    const todo = await Todos.findById(taskIds[taskId]);
     //check if todo actually exists or not
     if (todo) {
       teamTodos.push(todo);
+    } else {
+      // if the todo does not exist anymore, then delete it
+      const index = taskIds.indexOf(taskIds[taskId]);
+      taskIds.splice(index, 1);
+      taskId -= 1;
     }
-    //@ else part you could delete the todo. hi haaa
   }
+
+  await User.findOneAndUpdate(
+    { _id: req.user },
+    { taskId: taskIds },
+    // { new: true }, //to get updated doc
+    (err, result) => {
+      if (err) {
+        console.log("oops error: ", err);
+      }
+    }
+  );
 
   res.json(teamTodos);
 });
