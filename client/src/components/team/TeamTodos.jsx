@@ -22,6 +22,7 @@ export default class TeamTodos extends Component {
     const teamTodos = await axios.post("/users/getTeamTodos", null, {
       headers: { "x-auth-token": token },
     });
+    console.log(teamTodos.data);
 
     this.setState({ teamTodos: teamTodos.data });
   }

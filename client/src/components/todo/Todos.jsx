@@ -110,7 +110,7 @@ class Todos extends Component {
     const taskId = invite.taskId;
     const token = localStorage.getItem("auth-token");
 
-    // add taskid to the users list
+    // add taskid to the users list and member's email id to the todo's member list
     await axios.post("/users/addTaskId", { email, taskId });
 
     // now get updated team todos

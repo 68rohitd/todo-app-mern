@@ -250,6 +250,7 @@ class AddTodo extends Component {
       attachmentName,
       reminderId,
       time,
+      member: "",
     };
 
     const res = await axios.post("/todos/add", newTodo);
@@ -287,14 +288,6 @@ class AddTodo extends Component {
       type: "ADD_TODO",
       payload: res.data,
     });
-
-    // let updatedUser = user;
-    // updatedUser.history.push(res.data);
-
-    // dispatch({
-    //   type: "UPDATE_USER",
-    //   payload: updatedUser,
-    // });
 
     this.props.history.push("/");
   };

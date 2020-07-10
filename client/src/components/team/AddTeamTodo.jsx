@@ -250,6 +250,7 @@ class AddTodo extends Component {
       attachmentName,
       reminderId,
       time,
+      member: [],
     };
 
     const res = await axios.post("/todos/add", newTodo);

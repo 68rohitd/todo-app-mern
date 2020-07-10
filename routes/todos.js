@@ -91,6 +91,7 @@ router.route("/add").post((req, res) => {
   const attachmentName = req.body.attachmentName;
   const reminderId = req.body.reminderId;
   const time = req.body.time;
+  const member = req.body.member;
 
   const newTodo = new Todos({
     userId,
@@ -105,6 +106,7 @@ router.route("/add").post((req, res) => {
     attachmentName,
     reminderId,
     time,
+    memberList: [],
   });
 
   newTodo

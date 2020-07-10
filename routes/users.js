@@ -213,11 +213,25 @@ router.post("/addTaskId", async (req, res) => {
     (err, result) => {
       if (err) {
         res.status(400).json("Error: " + err);
-      } else {
-        res.json(result);
       }
     }
   );
+
+  // add the email to todo's memberList[]
+  const todo = await Todos.findById(taskId);
+
+  if (todo) {
+    let memberList = todo.memberList;
+    memberList.push(email);
+
+    Todos.findOneAndUpdate({ _id: taskId }, { memberList }, (err, result) => {
+      if (err) {
+        res.status(400).json("Error: " + err);
+      } else {
+        res.json(result);
+      }
+    });
+  }
 });
 
 // @desc: remove task id from id list of the user (remove user from the team)
@@ -242,11 +256,31 @@ router.post("/removeTaskId", async (req, res) => {
       (err, result) => {
         if (err) {
           res.status(400).json("Error: " + err);
-        } else {
-          res.json(result);
         }
       }
     );
+
+    // remove the email from todo's memberList[]
+    const todo = await Todos.findById(taskIdToRemove);
+
+    if (todo) {
+      let memberList = todo.memberList;
+      memberList = memberList.filter((memberEmail) => {
+        if (memberEmail !== emailToRemove) return memberEmail;
+      });
+
+      Todos.findOneAndUpdate(
+        { _id: taskIdToRemove },
+        { memberList },
+        (err, result) => {
+          if (err) {
+            res.status(400).json("Error: " + err);
+          } else {
+            res.json(result);
+          }
+        }
+      );
+    }
   }
 });
 

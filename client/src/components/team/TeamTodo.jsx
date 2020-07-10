@@ -472,6 +472,18 @@ class TeamTodo extends Component {
                                   </div>
                                 );
                               })}
+
+                          {/* display member list */}
+                          <div className="row">
+                            <div className="col">
+                              <div>
+                                <b>Members</b>
+                                {todoItem.memberList.map((member, index) => (
+                                  <div key={index}>{member}</div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
 
