@@ -41,7 +41,7 @@ export default class TeamTodos extends Component {
     return (
       <Consumer>
         {(value) => {
-          const { todos, user } = value;
+          const { todos, user, teamTodos } = value;
           // let completedTodos = todos.filter((todoItem) => todoItem.finished);
 
           // getting token from localstorage to avoid flicker
@@ -87,7 +87,11 @@ export default class TeamTodos extends Component {
                   <div className="row">
                     {/* side panel */}
                     <div className="col-3">
-                      <SidePanel todos={todos} user={user} />
+                      <SidePanel
+                        todos={todos}
+                        user={user}
+                        teamTodos={teamTodos}
+                      />
                     </div>
 
                     {/* main content */}

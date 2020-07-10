@@ -10,7 +10,7 @@ export default class History extends Component {
     return (
       <Consumer>
         {(value) => {
-          const { todos, user } = value;
+          const { todos, user, teamTodos } = value;
           let completedTodos = todos.filter((todoItem) => todoItem.finished);
 
           // getting token from localstorage to avoid flicker
@@ -56,7 +56,11 @@ export default class History extends Component {
                   <div className="row">
                     {/* side panel */}
                     <div className="col-12 order-2 col-sm-12 order-sm-2 col-md-3 order-md-1 col-lg-3 order-md-1">
-                      <SidePanel todos={todos} user={user} />
+                      <SidePanel
+                        todos={todos}
+                        user={user}
+                        teamTodos={teamTodos}
+                      />
                     </div>
 
                     {/* Completed list */}

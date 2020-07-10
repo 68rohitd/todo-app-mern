@@ -6,7 +6,7 @@ export default class SidePanel extends Component {
   render() {
     const currLocation = window.location.href.split("#/")[1];
 
-    const { todos, user } = this.props;
+    const { todos, user, teamTodos } = this.props;
 
     if (user) {
       if (user.history === undefined) user.history = [];
@@ -56,6 +56,9 @@ export default class SidePanel extends Component {
             <Link to="/team" style={{ textDecoration: "none" }}>
               <li className="myListItem list-group-item text-dark font-weight-bold">
                 {currLocation === "team" ? <b>Team </b> : "Team"}{" "}
+                <div className="badge badge-dark">
+                  {teamTodos ? teamTodos.length : null}
+                </div>
               </li>
             </Link>
 

@@ -53,7 +53,7 @@ export default class History extends Component {
     return (
       <Consumer>
         {(value) => {
-          const { todos, user, dispatch } = value;
+          const { todos, user, dispatch, teamTodos } = value;
 
           // getting token from localstorage to avoid flicker
           let token = localStorage.getItem("auth-token");
@@ -111,7 +111,11 @@ export default class History extends Component {
                   <div className="row">
                     {/* side panel */}
                     <div className="col-12 order-2 col-sm-12 order-sm-2 col-md-3 order-md-1 col-lg-3 order-md-1">
-                      <SidePanel todos={todos} user={user} />
+                      <SidePanel
+                        todos={todos}
+                        user={user}
+                        teamTodos={teamTodos}
+                      />
                     </div>
 
                     {/* history list */}

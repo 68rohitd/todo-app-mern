@@ -138,11 +138,43 @@ class Todos extends Component {
     });
   };
 
+  onRejectedInvite = async (invite, inviteList, user, dispatch, e) => {
+    console.log("rejecting..");
+    const email = user.email;
+    const taskId = invite.taskId;
+    const token = localStorage.getItem("auth-token");
+
+    // now get updated team todos
+    const teamTodos = await axios.post("/users/getTeamTodos", null, {
+      headers: { "x-auth-token": token },
+    });
+
+    // remove this invite link from the user too
+    let updatedInviteList = inviteList.filter(
+      (invite) => invite.taskId !== taskId
+    );
+
+    console.log("updated invited list: ", updatedInviteList);
+    // to update screen
+    dispatch({
+      type: "UPDATE_INVITELIST",
+      payload: {
+        inviteList: updatedInviteList,
+        teamTodos: teamTodos.data,
+      },
+    });
+
+    await axios.post("/users/updateInviteList", {
+      updatedInviteList,
+      email,
+    });
+  };
+
   render() {
     return (
       <Consumer>
         {(value) => {
-          let { todos, user, dispatch, inviteList } = value;
+          let { todos, user, dispatch, inviteList, teamTodos } = value;
           if (user === undefined) user = "";
 
           // getting token from localstorage to avoid flicker
@@ -309,23 +341,45 @@ class Todos extends Component {
                     <div className="row">
                       {/* side panel */}
                       <div className="col-12 order-2 col-sm-12 order-sm-2 col-md-3 order-md-1 col-lg-3 order-md-1">
-                        <SidePanel todos={todos} user={user} />
+                        <SidePanel
+                          todos={todos}
+                          user={user}
+                          teamTodos={teamTodos}
+                        />
 
                         {/* display invites */}
                         {inviteList.map((invite, index) => (
-                          <button
-                            className="btn btn-success my-2"
-                            key={index}
-                            onClick={this.onAcceptedInvite.bind(
-                              this,
-                              invite,
-                              inviteList,
-                              user,
-                              dispatch
-                            )}
-                          >
-                            you have an invite from {invite.from}
-                          </button>
+                          <div className="card my-2" key={index}>
+                            <div className="card-body">
+                              <p>
+                                You have an invite from <b>{invite.from}</b>
+                              </p>
+                              <button
+                                className="btn btn-success"
+                                onClick={this.onAcceptedInvite.bind(
+                                  this,
+                                  invite,
+                                  inviteList,
+                                  user,
+                                  dispatch
+                                )}
+                              >
+                                Accept
+                              </button>{" "}
+                              <button
+                                className="btn btn-danger"
+                                onClick={this.onRejectedInvite.bind(
+                                  this,
+                                  invite,
+                                  inviteList,
+                                  user,
+                                  dispatch
+                                )}
+                              >
+                                Reject
+                              </button>
+                            </div>
+                          </div>
                         ))}
                       </div>
 
