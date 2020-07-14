@@ -153,26 +153,39 @@ router.post("/invite", async (req, res) => {
 
   if (user) {
     let inviteList = user.inviteList;
+    let alreadyInvited = false;
 
-    const invite = {
-      from: fromEmail,
-      taskId: taskId,
-      accepted: false,
-    };
-    inviteList.push(invite);
+    inviteList.forEach((invite) => {
+      if (invite.taskId === taskId) alreadyInvited = true;
+    });
 
-    User.findOneAndUpdate(
-      { email: toEmail },
-      { inviteList },
-      { new: true }, //to get updated doc
-      (err, result) => {
-        if (err) {
-          res.status(400).json("Error: " + err);
-        } else {
-          res.json(result);
+    if (alreadyInvited === false) {
+      //the user has not invited earlier
+      const invite = {
+        from: fromEmail,
+        taskId: taskId,
+        accepted: false,
+      };
+      inviteList.push(invite);
+
+      User.findOneAndUpdate(
+        { email: toEmail },
+        { inviteList },
+        { new: true }, //to get updated doc
+        (err, result) => {
+          if (err) {
+            res.status(400).json("Error: " + err);
+          } else {
+            res.json(result);
+          }
         }
-      }
-    );
+      );
+    } else {
+      //user alerady invited
+      res.status(400).json({ msg: "User already invited/present" });
+    }
+  } else {
+    res.status(400).json({ msg: "User not found" });
   }
 });
 
@@ -247,40 +260,44 @@ router.post("/removeTaskId", async (req, res) => {
     // if task is present in tasklist, then only remove
     if (index >= 0) {
       taskList.splice(index, 1);
-    }
 
-    User.findOneAndUpdate(
-      { email: emailToRemove },
-      { taskId: taskList },
-      { new: true }, //to get updated doc
-      (err, result) => {
-        if (err) {
-          res.status(400).json("Error: " + err);
-        }
-      }
-    );
-
-    // remove the email from todo's memberList[]
-    const todo = await Todos.findById(taskIdToRemove);
-
-    if (todo) {
-      let memberList = todo.memberList;
-      memberList = memberList.filter((memberEmail) => {
-        if (memberEmail !== emailToRemove) return memberEmail;
-      });
-
-      Todos.findOneAndUpdate(
-        { _id: taskIdToRemove },
-        { memberList },
+      User.findOneAndUpdate(
+        { email: emailToRemove },
+        { taskId: taskList },
+        { new: true }, //to get updated doc
         (err, result) => {
           if (err) {
             res.status(400).json("Error: " + err);
-          } else {
-            res.json(result);
           }
         }
       );
+
+      // remove the email from todo's memberList[]
+      const todo = await Todos.findById(taskIdToRemove);
+
+      if (todo) {
+        let memberList = todo.memberList;
+        memberList = memberList.filter((memberEmail) => {
+          if (memberEmail !== emailToRemove) return memberEmail;
+        });
+
+        Todos.findOneAndUpdate(
+          { _id: taskIdToRemove },
+          { memberList },
+          (err, result) => {
+            if (err) {
+              res.status(400).json("Error: " + err);
+            } else {
+              res.json(result);
+            }
+          }
+        );
+      }
+    } else {
+      res.status(400).json({ msg: "User not found" });
     }
+  } else {
+    res.status(400).json({ msg: "User not found" });
   }
 });
 
