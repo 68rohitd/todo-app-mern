@@ -35,9 +35,11 @@ connection.once("open", () => {
 
 const todosRouter = require("./routes/todos");
 const usersRouter = require("./routes/users");
+const emailRouter = require("./routes/email");
 
 app.use("/todos", todosRouter);
 app.use("/users", usersRouter);
+app.use("/email", emailRouter.router);
 
 // serve static assets
 if (process.env.NODE_ENV === "production") {

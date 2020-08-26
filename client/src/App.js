@@ -21,6 +21,7 @@ import TeamTodos from "./components/team/TeamTodos";
 import AddTeamTodo from "./components/team/AddTeamTodo";
 import AddMember from "./components/team/AddMember";
 import EditTeamTodo from "./components/team/EditTeamTodo";
+import ContactUs from "./components/layouts/ContactUs";
 
 export default class App extends Component {
   render() {
@@ -42,6 +43,7 @@ export default class App extends Component {
               <Route exact path="/edit/:id" component={EditTodo} />
               <Route exact path="/advancedFilter" component={AdvnacedFilter} />
               <Route exact path="/about" component={About} />
+              <Route exact path="/contactUs" component={ContactUs} />
               <Route exact path="/login" component={Login} />
               <Route exact path="/signup" component={Signup} />
               <Route component={PageNotFound} />

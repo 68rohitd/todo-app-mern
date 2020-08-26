@@ -160,6 +160,15 @@ class Header extends Component {
                         </li>
                       </>
                     )}
+                    <li>
+                      <Link
+                        to="/contactUs"
+                        className="nav-link text-light "
+                        style={{ cursor: "pointer", fontSize: 16 }}
+                      >
+                        Contact Us
+                      </Link>
+                    </li>
                   </div>
                 </div>
               </nav>

@@ -37,7 +37,7 @@ router.post("/register", async (req, res) => {
 
     if (!displayName) displayName = email;
 
-    sendEmail.createdNewAccount(email, displayName);
+    sendEmail.sendEmail(email, displayName);
 
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
