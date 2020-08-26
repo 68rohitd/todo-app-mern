@@ -43,6 +43,10 @@ export default function About() {
                 </p>
 
                 <p className="mb-1 font-italic">
+                  <b>Introducing Teams! Create teams, add team members etc</b>
+                </p>
+
+                <p className="mb-1 font-italic">
                   Login/Register feature, so you can access your todos anytime,
                   anywhere!
                 </p>
@@ -53,6 +57,19 @@ export default function About() {
               <div className="col">
                 <img className="aboutSVG" src={checkList} alt="" />
               </div>
+
+              <footer className="text-secondary font-italic">
+                <small>
+                  Developed by:{" "}
+                  <a href="mailto:6rohit8@gmail.com">6rohit8@gmail.com</a>{" "}
+                  <br />
+                  <b>
+                    <a href="https://youtu.be/6VuvEj-cN-E" target="_blank">
+                      DEMO
+                    </a>
+                  </b>
+                </small>
+              </footer>
             </div>
           )}
         </Spring>

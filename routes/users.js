@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 let auth = require("../middleware/auth");
 let User = require("../models/user.model");
 let Todos = require("../models/todos.model");
+const sendEmail = require("./email");
 
 // @desc: register a user
 router.post("/register", async (req, res) => {
@@ -14,11 +15,13 @@ router.post("/register", async (req, res) => {
     if (!email || !password || !passwordCheck) {
       return res.status(400).json({ msg: "Please enter all the fields" });
     }
+
     if (password.length < 6) {
       return res
         .status(400)
         .json({ msg: "Password should be at least 6 characters" });
     }
+
     if (password !== passwordCheck) {
       return res
         .status(400)
@@ -33,6 +36,8 @@ router.post("/register", async (req, res) => {
     }
 
     if (!displayName) displayName = email;
+
+    sendEmail.createdNewAccount(email, displayName);
 
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
